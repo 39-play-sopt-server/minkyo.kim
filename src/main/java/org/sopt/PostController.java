@@ -1,4 +1,3 @@
-// PostController
 package org.sopt;
 
 import java.util.ArrayList;
