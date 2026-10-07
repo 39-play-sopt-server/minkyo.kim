@@ -1,6 +1,7 @@
 // PostView
 package org.sopt;
 
+import java.util.List;
 import java.util.Scanner;
 
 public class PostView {
@@ -34,6 +35,12 @@ public class PostView {
     public int readPostNumber(String message) {
         System.out.print(message);
         return Integer.parseInt(scanner.nextLine());
+    }
+
+    public void printPosts(List<Post> posts) {
+        for (int i=0; i<posts.size(); i++) {
+            System.out.println((i + 1) + ". " + posts.get(i).getTitle());
+        }
     }
 
     public void printPost(Post post) {
