@@ -6,9 +6,11 @@ import java.util.List;
 public class PostController {
     private final List<Post> posts = new ArrayList<>();
     private final PostView view;
+    private final PostService service;
 
-    public PostController(PostView view) {
+    public PostController(PostView view, PostService service) {
         this.view = view;
+        this.service = service;
     }
 
     public void run() {
