@@ -1,6 +1,7 @@
 package org.sopt;
 
 import java.util.List;
+import java.util.Optional;
 
 public class PostService {
     private final PostRepository repository;
@@ -9,7 +10,7 @@ public class PostService {
         this.repository = repository;
     }
 
-    public void createPost(String title, String content) {
+    public void createPost(String title, String content, Category category) {
         if (title.isBlank()) {
             System.out.println("제목은 필수 입력 항목입니다.");
             return;
@@ -18,8 +19,12 @@ public class PostService {
             System.out.println("내용은 필수 입력 항목입니다.");
             return;
         }
-        
-        Post post = new Post(title, content);
+        if (category == null) {
+            System.out.println("카테고리는 필수 입력 항목입니다.");
+            return;
+        }
+
+        Post post = new Post(title, content, category);
         repository.save(post);
     }
 
@@ -31,17 +36,18 @@ public class PostService {
         return repository.findAll();
     }
 
-    public boolean updatePost(int index, String newTitle, String newContent) {
+    public boolean updatePost(int index, String newTitle, String newContent, Optional<Category> newCategory) {
         Post post = repository.find(index);
 
-        if (newTitle.isBlank() && newContent.isBlank()) {
+        if (newTitle.isBlank() && newContent.isBlank() && newCategory.isEmpty()) {
             return false;
         }
 
         String updatedTitle = newTitle.isBlank() ? post.getTitle() : newTitle;
         String updatedContent = newContent.isBlank() ? post.getContent() : newContent;
+        Category updatedCategory = newCategory.orElse(post.getCategory());
 
-        repository.update(index, updatedTitle, updatedContent);
+        repository.update(index, updatedTitle, updatedContent, updatedCategory);
 
         return true;
     }

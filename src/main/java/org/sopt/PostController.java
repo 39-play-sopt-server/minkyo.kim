@@ -1,6 +1,7 @@
 package org.sopt;
 
 import java.util.List;
+import java.util.Optional;
 
 public class PostController {
     private final PostView view;
@@ -33,8 +34,9 @@ public class PostController {
     private void createPost() {
         String title = view.readTitle();
         String content = view.readContent();
+        Category category = view.readCategory();
 
-        service.createPost(title, content);
+        service.createPost(title, content, category);
         view.printMessage("게시글이 작성되었습니다.");
     }
 
@@ -80,8 +82,9 @@ public class PostController {
 
         String newTitle = view.readNewTitle();
         String newContent = view.readNewContent();
+        Optional<Category> newCategory = view.readNewCategory();
 
-        boolean isUpdated = service.updatePost(index, newTitle, newContent);
+        boolean isUpdated = service.updatePost(index, newTitle, newContent, newCategory);
         if (isUpdated) {
             view.printMessage("게시글이 수정되었습니다.");
         } else {

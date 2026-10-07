@@ -2,6 +2,7 @@
 package org.sopt;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Scanner;
 
 public class PostView {
@@ -32,6 +33,23 @@ public class PostView {
         return scanner.nextLine();
     }
 
+    private void printCategoryMenu() {
+        System.out.println("=== 카테고리 ===");
+
+        for (Category category : Category.values()) {
+            System.out.println(category.getNumber() + ". " + category.getName());
+        }
+        System.out.println("==============");
+    }
+
+    public Category readCategory() {
+        printCategoryMenu();
+        System.out.print("카테고리: ");
+
+        int categoryNumber = Integer.parseInt(scanner.nextLine());
+        return Category.fromNumber(categoryNumber);
+    }
+
     public String readNewTitle() {
         System.out.print("제목(제목을 변경하지 않으려면 Enter): ");
         return scanner.nextLine();
@@ -40,6 +58,20 @@ public class PostView {
     public String readNewContent() {
         System.out.print("내용(내용을 변경하지 않으려면 Enter): ");
         return scanner.nextLine();
+    }
+
+    public Optional<Category> readNewCategory() {
+        printCategoryMenu();
+        System.out.print("카테고리(카테고리를 변경하지 않으려면 Enter): ");
+
+        String input = scanner.nextLine();
+
+        if (input.isBlank()) {
+            return Optional.empty();
+        }
+
+        int categoryNumber = Integer.parseInt(input);
+        return Optional.of(Category.fromNumber(categoryNumber));
     }
 
     public int readPostNumber(String message) {
@@ -57,6 +89,7 @@ public class PostView {
         System.out.println("\n=== 게시글 ===");
         System.out.println("제목: " + post.getTitle());
         System.out.println("내용: " + post.getContent());
+        System.out.println("카테고리: " + post.getCategory().getName());
     }
 
     public void printMessage(String message) {
