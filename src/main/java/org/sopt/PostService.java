@@ -1,53 +1,51 @@
 package org.sopt;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class PostService {
     private final PostRepository repository;
-    private final List<Post> posts = new ArrayList<>();
 
     public PostService(PostRepository repository) {
         this.repository = repository;
     }
 
     public void createPost(String title, String content) {
-        posts.add(new Post(title, content));
+        Post post = new Post(title, content);
+        repository.save(post);
     }
 
     public Post readPost(int index) {
-        return posts.get(index);
+        return repository.find(index);
     }
 
     public List<Post> readPosts() {
-        return List.copyOf(posts);
+        return repository.findAll();
     }
 
     public boolean updatePost(int index, String newTitle, String newContent) {
-        Post post = posts.get(index);
-        boolean isUpdated = false;
+        Post post = repository.find(index);
 
-        if (!newTitle.isBlank()) {
-            post.updateTitle(newTitle);
-            isUpdated = true;
-        }
-        if (!newContent.isBlank()) {
-            post.updateContent(newContent);
-            isUpdated = true;
+        if (newTitle.isBlank() && newContent.isBlank()) {
+            return false;
         }
 
-        return isUpdated;
+        String updatedTitle = newTitle.isBlank() ? post.getTitle() : newTitle;
+        String updatedContent = newContent.isBlank() ? post.getContent() : newContent;
+
+        repository.update(index, updatedTitle, updatedContent);
+
+        return true;
     }
 
     public void deletePost(int index) {
-        posts.remove(index);
+        repository.delete(index);
     }
 
     public boolean hasNoPosts() {
-        return posts.isEmpty();
+        return repository.isEmpty();
     }
 
     public boolean isValidIndex(int index) {
-        return index >= 0 && index < posts.size();
+        return repository.existsByIndex(index);
     }
 }

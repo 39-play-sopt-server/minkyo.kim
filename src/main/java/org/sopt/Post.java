@@ -17,11 +17,8 @@ public class Post {
         return this.content;
     }
 
-    public void updateTitle(String newTitle) {
+    public void update(String newTitle, String newContent) {
         this.title = newTitle;
-    }
-
-    public void updateContent(String newContent) {
         this.content = newContent;
     }
 }
