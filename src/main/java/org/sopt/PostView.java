@@ -33,6 +33,11 @@ public class PostView {
         return scanner.nextLine();
     }
 
+    public String readWriter() {
+        System.out.println("작성자: ");
+        return scanner.nextLine();
+    }
+
     private void printCategoryMenu() {
         System.out.println("=== 카테고리 ===");
 
@@ -50,14 +55,26 @@ public class PostView {
         return Category.fromNumber(categoryNumber);
     }
 
-    public String readNewTitle() {
+    public Optional<String> readNewTitle() {
         System.out.print("제목(제목을 변경하지 않으려면 Enter): ");
-        return scanner.nextLine();
+        String title = scanner.nextLine();
+
+        if (title.isBlank()) {
+            return Optional.empty();
+        }
+
+        return Optional.of(title);
     }
 
-    public String readNewContent() {
+    public Optional<String> readNewContent() {
         System.out.print("내용(내용을 변경하지 않으려면 Enter): ");
-        return scanner.nextLine();
+        String content = scanner.nextLine();
+
+        if (content.isBlank()) {
+            return Optional.empty();
+        }
+
+        return Optional.of(content);
     }
 
     public Optional<Category> readNewCategory() {
@@ -90,6 +107,14 @@ public class PostView {
         System.out.println("제목: " + post.getTitle());
         System.out.println("내용: " + post.getContent());
         System.out.println("카테고리: " + post.getCategory().getName());
+        System.out.println("작성자: " + post.getWriter());
+        System.out.print("생성: " + post.getCreatedAt());
+
+        if (!post.getCreatedAt().equals(post.getUpdatedAt())) {
+            System.out.println(" | 수정: " + post.getUpdatedAt());
+        } else {
+            System.out.println();
+        }
     }
 
     public void printMessage(String message) {

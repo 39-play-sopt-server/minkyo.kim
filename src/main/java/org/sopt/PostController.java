@@ -1,7 +1,9 @@
 package org.sopt;
 
+import org.sopt.request.CreatePostRequest;
+import org.sopt.request.UpdatePostRequest;
+
 import java.util.List;
-import java.util.Optional;
 
 public class PostController {
     private final PostView view;
@@ -35,8 +37,11 @@ public class PostController {
         String title = view.readTitle();
         String content = view.readContent();
         Category category = view.readCategory();
+        String writer = view.readWriter();
 
-        service.createPost(title, content, category);
+        CreatePostRequest request = new CreatePostRequest(title, content, category, writer);
+
+        service.createPost(request);
         view.printMessage("게시글이 작성되었습니다.");
     }
 
@@ -80,11 +85,13 @@ public class PostController {
             return;
         }
 
-        String newTitle = view.readNewTitle();
-        String newContent = view.readNewContent();
-        Optional<Category> newCategory = view.readNewCategory();
+        UpdatePostRequest request = new UpdatePostRequest(
+                view.readNewTitle(),
+                view.readNewContent(),
+                view.readNewCategory()
+        );
 
-        boolean isUpdated = service.updatePost(index, newTitle, newContent, newCategory);
+        boolean isUpdated = service.updatePost(index, request);
         if (isUpdated) {
             view.printMessage("게시글이 수정되었습니다.");
         } else {

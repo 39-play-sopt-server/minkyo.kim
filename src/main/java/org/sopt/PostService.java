@@ -1,7 +1,9 @@
 package org.sopt;
 
+import org.sopt.request.CreatePostRequest;
+import org.sopt.request.UpdatePostRequest;
+
 import java.util.List;
-import java.util.Optional;
 
 public class PostService {
     private final PostRepository repository;
@@ -10,21 +12,25 @@ public class PostService {
         this.repository = repository;
     }
 
-    public void createPost(String title, String content, Category category) {
-        if (title.isBlank()) {
+    public void createPost(CreatePostRequest request) {
+        if (request.title().isBlank()) {
             System.out.println("제목은 필수 입력 항목입니다.");
             return;
         }
-        if (content.isBlank()) {
+        if (request.content().isBlank()) {
             System.out.println("내용은 필수 입력 항목입니다.");
             return;
         }
-        if (category == null) {
+        if (request.category() == null) {
             System.out.println("카테고리는 필수 입력 항목입니다.");
             return;
         }
+        if (request.writer().isBlank()) {
+            System.out.println("작성자는 필수 입력 항목입니다.");
+            return;
+        }
 
-        Post post = new Post(title, content, category);
+        Post post = new Post(request.title(), request.content(), request.category(), request.writer());
         repository.save(post);
     }
 
@@ -36,18 +42,19 @@ public class PostService {
         return repository.findAll();
     }
 
-    public boolean updatePost(int index, String newTitle, String newContent, Optional<Category> newCategory) {
-        Post post = repository.find(index);
-
-        if (newTitle.isBlank() && newContent.isBlank() && newCategory.isEmpty()) {
+    public boolean updatePost(int index, UpdatePostRequest request) {
+        if (request.title().isEmpty() && request.content().isEmpty() && request.category().isEmpty()) {
             return false;
         }
 
-        String updatedTitle = newTitle.isBlank() ? post.getTitle() : newTitle;
-        String updatedContent = newContent.isBlank() ? post.getContent() : newContent;
-        Category updatedCategory = newCategory.orElse(post.getCategory());
+        Post originalPost = repository.find(index);
+        Post updatedPost = originalPost.with(
+                request.title(),
+                request.content(),
+                request.category()
+        );
 
-        repository.update(index, updatedTitle, updatedContent, updatedCategory);
+        repository.update(index, updatedPost);
 
         return true;
     }

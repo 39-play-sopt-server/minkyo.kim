@@ -18,10 +18,8 @@ public class PostRepository {
         return List.copyOf(posts);
     }
 
-    public void update(int index, String newTitle, String newContent, Category newCategory) {
-        Post post = posts.get(index);
-
-        post.update(newTitle, newContent, newCategory);
+    public void update(int index, Post updatedPost) {
+        posts.set(index, updatedPost);
     }
 
     public void delete(int index) {
