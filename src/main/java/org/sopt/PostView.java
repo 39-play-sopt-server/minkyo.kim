@@ -32,6 +32,16 @@ public class PostView {
         return scanner.nextLine();
     }
 
+    public String readNewTitle() {
+        System.out.print("제목(제목을 변경하지 않으려면 Enter): ");
+        return scanner.nextLine();
+    }
+
+    public String readNewContent() {
+        System.out.print("내용(내용을 변경하지 않으려면 Enter): ");
+        return scanner.nextLine();
+    }
+
     public int readPostNumber(String message) {
         System.out.print(message);
         return Integer.parseInt(scanner.nextLine());

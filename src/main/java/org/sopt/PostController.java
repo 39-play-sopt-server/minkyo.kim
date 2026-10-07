@@ -78,11 +78,15 @@ public class PostController {
             return;
         }
 
-        String newTitle = view.readTitle();
-        String newContent = view.readContent();
+        String newTitle = view.readNewTitle();
+        String newContent = view.readNewContent();
 
-        service.updatePost(index, newTitle, newContent);
-        view.printMessage("게시글이 수정되었습니다.");
+        boolean isUpdated = service.updatePost(index, newTitle, newContent);
+        if (isUpdated) {
+            view.printMessage("게시글이 수정되었습니다.");
+        } else {
+            view.printMessage("수정된 내용이 없습니다.");
+        }
     }
 
     private void deletePost() {

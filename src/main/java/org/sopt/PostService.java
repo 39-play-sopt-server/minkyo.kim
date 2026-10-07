@@ -23,10 +23,20 @@ public class PostService {
         return List.copyOf(posts);
     }
 
-    public void updatePost(int index, String newTitle, String newContent) {
+    public boolean updatePost(int index, String newTitle, String newContent) {
         Post post = posts.get(index);
-        post.updateTitle(newTitle);
-        post.updateContent(newContent);
+        boolean isUpdated = false;
+
+        if (!newTitle.isBlank()) {
+            post.updateTitle(newTitle);
+            isUpdated = true;
+        }
+        if (!newContent.isBlank()) {
+            post.updateContent(newContent);
+            isUpdated = true;
+        }
+
+        return isUpdated;
     }
 
     public void deletePost(int index) {
