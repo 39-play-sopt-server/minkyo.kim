@@ -1,36 +1,42 @@
 package org.sopt;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class PostRepository {
-    private final List<Post> posts = new ArrayList<>();
+    private final Map<Long, Post> posts = new HashMap<>();
+
+    private long nextId = 0L;
 
     public void save(Post post) {
-        posts.add(post);
+        long id = nextId++;
+        post.assignId(id);
+
+        posts.put(id, post);
     }
 
-    public Post find(int index) {
-        return posts.get(index);
+    public Post find(long id) {
+        return posts.get(id);
     }
 
     public List<Post> findAll() {
-        return List.copyOf(posts);
+        return List.copyOf(posts.values());
     }
 
-    public void update(int index, Post updatedPost) {
-        posts.set(index, updatedPost);
+    public void update(Post updatedPost) {
+        posts.put(updatedPost.getId(), updatedPost);
     }
 
-    public void delete(int index) {
-        posts.remove(index);
+    public void delete(long id) {
+        posts.remove(id);
     }
 
     public boolean isEmpty() {
         return posts.isEmpty();
     }
 
-    public boolean existsByIndex(int index) {
-        return index >= 0 && index < posts.size();
+    public boolean existsById(long id) {
+        return posts.containsKey(id);
     }
 }

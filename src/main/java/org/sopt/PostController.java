@@ -61,14 +61,14 @@ public class PostController {
             return;
         }
 
-        int index = view.readPostNumber("조회할 게시글 번호: ") - 1;
+        long id = view.readPostNumber("조회할 게시글 번호: ");
         // TODO: 인덱스 검증은 service 내에 예외 throw로 수정할 것
-        if (!service.isValidIndex(index)) {
+        if (!service.isValidId(id)) {
             view.printMessage("존재하지 않는 게시글입니다.");
             return;
         }
 
-        Post post = service.readPost(index);
+        Post post = service.readPost(id);
         view.printPost(post);
     }
 
@@ -78,9 +78,9 @@ public class PostController {
             return;
         }
 
-        int index = view.readPostNumber("수정할 게시글 번호: ") - 1;
+        long id = view.readPostNumber("수정할 게시글 번호: ");
         // TODO: 인덱스 검증은 service 내에 예외 throw로 수정할 것
-        if (!service.isValidIndex(index)) {
+        if (!service.isValidId(id)) {
             view.printMessage("존재하지 않는 게시글입니다.");
             return;
         }
@@ -91,7 +91,7 @@ public class PostController {
                 view.readNewCategory()
         );
 
-        boolean isUpdated = service.updatePost(index, request);
+        boolean isUpdated = service.updatePost(id, request);
         if (isUpdated) {
             view.printMessage("게시글이 수정되었습니다.");
         } else {
@@ -105,14 +105,14 @@ public class PostController {
             return;
         }
 
-        int index = view.readPostNumber("삭제할 게시글 번호: ") - 1;
+        long id = view.readPostNumber("삭제할 게시글 번호: ");
         // TODO: 인덱스 검증은 service 내에 예외 throw로 수정할 것
-        if (!service.isValidIndex(index)) {
+        if (!service.isValidId(id)) {
             view.printMessage("존재하지 않는 게시글입니다.");
             return;
         }
 
-        service.deletePost(index);
+        service.deletePost(id);
         view.printMessage("게시글이 삭제되었습니다.");
     }
 }

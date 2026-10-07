@@ -34,40 +34,40 @@ public class PostService {
         repository.save(post);
     }
 
-    public Post readPost(int index) {
-        return repository.find(index);
+    public Post readPost(long id) {
+        return repository.find(id);
     }
 
     public List<Post> readPosts() {
         return repository.findAll();
     }
 
-    public boolean updatePost(int index, UpdatePostRequest request) {
+    public boolean updatePost(long id, UpdatePostRequest request) {
         if (request.title().isEmpty() && request.content().isEmpty() && request.category().isEmpty()) {
             return false;
         }
 
-        Post originalPost = repository.find(index);
+        Post originalPost = repository.find(id);
         Post updatedPost = originalPost.with(
                 request.title(),
                 request.content(),
                 request.category()
         );
 
-        repository.update(index, updatedPost);
+        repository.update(updatedPost);
 
         return true;
     }
 
-    public void deletePost(int index) {
-        repository.delete(index);
+    public void deletePost(long id) {
+        repository.delete(id);
     }
 
     public boolean hasNoPosts() {
         return repository.isEmpty();
     }
 
-    public boolean isValidIndex(int index) {
-        return repository.existsByIndex(index);
+    public boolean isValidId(long id) {
+        return repository.existsById(id);
     }
 }

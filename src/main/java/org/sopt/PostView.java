@@ -34,7 +34,7 @@ public class PostView {
     }
 
     public String readWriter() {
-        System.out.println("작성자: ");
+        System.out.print("작성자: ");
         return scanner.nextLine();
     }
 
@@ -91,14 +91,14 @@ public class PostView {
         return Optional.of(Category.fromNumber(categoryNumber));
     }
 
-    public int readPostNumber(String message) {
+    public long readPostNumber(String message) {
         System.out.print(message);
-        return Integer.parseInt(scanner.nextLine());
+        return Long.parseLong(scanner.nextLine());
     }
 
     public void printPosts(List<Post> posts) {
-        for (int i=0; i<posts.size(); i++) {
-            System.out.println((i + 1) + ". " + posts.get(i).getTitle());
+        for (Post post : posts) {
+            System.out.println("[id: " + post.getId() + "] " + post.getTitle());
         }
     }
 

@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 public class Post {
+    private Long id;
     private final String title;
     private final String content;
     private final Category category;
@@ -19,6 +20,7 @@ public class Post {
     ) {
         LocalDateTime now = LocalDateTime.now();
 
+        this.id = null;
         this.title = title;
         this.content = content;
         this.category = category;
@@ -28,6 +30,7 @@ public class Post {
     }
 
     private Post(
+            long id,
             String title,
             String content,
             Category category,
@@ -35,12 +38,17 @@ public class Post {
             LocalDateTime createdAt,
             LocalDateTime updatedAt
     ) {
+        this.id = id;
         this.title = title;
         this.content = content;
         this.category = category;
         this.writer = writer;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+    }
+
+    public Long getId() {
+        return this.id;
     }
 
     public String getTitle() {
@@ -67,8 +75,13 @@ public class Post {
         return this.updatedAt;
     }
 
+    void assignId(long id) {
+        this.id = id;
+    }
+
     public Post with(Optional<String> newTitle, Optional<String> newContent, Optional<Category> newCategory) {
         return new Post(
+                this.id,
                 newTitle.orElse(this.title),
                 newContent.orElse(this.content),
                 newCategory.orElse(this.category),
