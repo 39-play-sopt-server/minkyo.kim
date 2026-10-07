@@ -1,5 +1,7 @@
 package org.sopt;
 
+import org.sopt.exception.CustomException;
+import org.sopt.exception.ErrorCode;
 import org.sopt.request.CreatePostRequest;
 import org.sopt.request.UpdatePostRequest;
 
@@ -14,20 +16,16 @@ public class PostService {
 
     public void createPost(CreatePostRequest request) {
         if (request.title().isBlank()) {
-            System.out.println("제목은 필수 입력 항목입니다.");
-            return;
+            throw new CustomException(ErrorCode.TITLE_REQUIRED);
         }
         if (request.content().isBlank()) {
-            System.out.println("내용은 필수 입력 항목입니다.");
-            return;
+            throw new CustomException(ErrorCode.CONTENT_REQUIRED);
         }
         if (request.category() == null) {
-            System.out.println("카테고리는 필수 입력 항목입니다.");
-            return;
+            throw new CustomException(ErrorCode.CATEGORY_REQUIRED);
         }
         if (request.writer().isBlank()) {
-            System.out.println("작성자는 필수 입력 항목입니다.");
-            return;
+            throw new CustomException(ErrorCode.WRITER_REQUIRED);
         }
 
         Post post = new Post(request.title(), request.content(), request.category(), request.writer());
@@ -35,7 +33,7 @@ public class PostService {
     }
 
     public Post readPost(long id) {
-        return repository.find(id);
+        return getPost(id);
     }
 
     public List<Post> readPosts() {
@@ -47,7 +45,7 @@ public class PostService {
             return false;
         }
 
-        Post originalPost = repository.find(id);
+        Post originalPost = getPost(id);
         Post updatedPost = originalPost.with(
                 request.title(),
                 request.content(),
@@ -60,6 +58,7 @@ public class PostService {
     }
 
     public void deletePost(long id) {
+        getPost(id);
         repository.delete(id);
     }
 
@@ -67,7 +66,11 @@ public class PostService {
         return repository.isEmpty();
     }
 
-    public boolean isValidId(long id) {
-        return repository.existsById(id);
+    private Post getPost(long id) {
+        if (!repository.existsById(id)) {
+            throw new CustomException(ErrorCode.POST_NOT_FOUND);
+        }
+
+        return repository.find(id);
     }
 }

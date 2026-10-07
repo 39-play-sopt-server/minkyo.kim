@@ -1,5 +1,8 @@
 package org.sopt;
 
+import org.sopt.exception.CustomException;
+import org.sopt.exception.ErrorCode;
+
 public enum Category {
     NOTICE(1, "공지"),
     QUESTION(2, "질문"),
@@ -29,6 +32,6 @@ public enum Category {
             }
         }
 
-        throw new IllegalArgumentException("존재하지 않는 카테고리입니다.");
+        throw new CustomException(ErrorCode.CATEGORY_NOT_FOUND);
     }
 }

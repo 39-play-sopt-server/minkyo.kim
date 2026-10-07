@@ -1,5 +1,7 @@
 package org.sopt;
 
+import org.sopt.exception.CustomException;
+import org.sopt.exception.ErrorCode;
 import org.sopt.request.CreatePostRequest;
 import org.sopt.request.UpdatePostRequest;
 
@@ -16,19 +18,23 @@ public class PostController {
 
     public void run() {
         while (true) {
-            view.printMenu();
-            int command = view.readCommand();
-            switch (command) {
-                case 1 -> createPost();
-                case 2 -> readPosts();
-                case 3 -> readPost();
-                case 4 -> updatePost();
-                case 5 -> deletePost();
-                case 6 -> {
-                    view.printMessage("프로그램을 종료합니다.");
-                    return;
+            try {
+                view.printMenu();
+                int command = view.readCommand();
+                switch (command) {
+                    case 1 -> createPost();
+                    case 2 -> readPosts();
+                    case 3 -> readPost();
+                    case 4 -> updatePost();
+                    case 5 -> deletePost();
+                    case 6 -> {
+                        view.printMessage("프로그램을 종료합니다.");
+                        return;
+                    }
+                    default -> throw new CustomException(ErrorCode.INVALID_INPUT);
                 }
-                default -> view.printMessage("잘못된 입력입니다.");
+            } catch (CustomException e) {
+                view.printMessage(e.getMessage());
             }
         }
     }
@@ -62,11 +68,6 @@ public class PostController {
         }
 
         long id = view.readPostNumber("조회할 게시글 번호: ");
-        // TODO: 인덱스 검증은 service 내에 예외 throw로 수정할 것
-        if (!service.isValidId(id)) {
-            view.printMessage("존재하지 않는 게시글입니다.");
-            return;
-        }
 
         Post post = service.readPost(id);
         view.printPost(post);
@@ -79,11 +80,6 @@ public class PostController {
         }
 
         long id = view.readPostNumber("수정할 게시글 번호: ");
-        // TODO: 인덱스 검증은 service 내에 예외 throw로 수정할 것
-        if (!service.isValidId(id)) {
-            view.printMessage("존재하지 않는 게시글입니다.");
-            return;
-        }
 
         UpdatePostRequest request = new UpdatePostRequest(
                 view.readNewTitle(),
@@ -106,11 +102,6 @@ public class PostController {
         }
 
         long id = view.readPostNumber("삭제할 게시글 번호: ");
-        // TODO: 인덱스 검증은 service 내에 예외 throw로 수정할 것
-        if (!service.isValidId(id)) {
-            view.printMessage("존재하지 않는 게시글입니다.");
-            return;
-        }
 
         service.deletePost(id);
         view.printMessage("게시글이 삭제되었습니다.");

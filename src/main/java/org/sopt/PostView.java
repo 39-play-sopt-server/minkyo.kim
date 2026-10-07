@@ -1,6 +1,8 @@
 // PostView
 package org.sopt;
 
+import org.sopt.exception.CustomException;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
@@ -18,9 +20,34 @@ public class PostView {
         System.out.println("6. 종료");
     }
 
+    private int readInt(String message) {
+        while(true) {
+            System.out.print(message);
+            String input = scanner.nextLine();
+
+            try {
+                return Integer.parseInt(input);
+            } catch (NumberFormatException e) {
+                System.out.println("숫자를 입력해주세요.");
+            }
+        }
+    }
+
+    private long readLong(String message) {
+        while(true) {
+            System.out.print(message);
+            String input = scanner.nextLine();
+
+            try {
+                return Long.parseLong(input);
+            } catch (NumberFormatException e) {
+                System.out.println("숫자를 입력해주세요.");
+            }
+        }
+    }
+
     public int readCommand() {
-        System.out.print("선택: ");
-        return Integer.parseInt(scanner.nextLine());
+        return readInt("작업 선택: ");
     }
 
     public String readTitle() {
@@ -48,11 +75,17 @@ public class PostView {
     }
 
     public Category readCategory() {
-        printCategoryMenu();
-        System.out.print("카테고리: ");
+        while (true) {
+            printCategoryMenu();
 
-        int categoryNumber = Integer.parseInt(scanner.nextLine());
-        return Category.fromNumber(categoryNumber);
+            int categoryNumber = readInt("카테고리: ");
+
+            try {
+                return Category.fromNumber(categoryNumber);
+            } catch (CustomException e) {
+                System.out.println(e.getMessage());
+            }
+        }
     }
 
     public Optional<String> readNewTitle() {
@@ -78,22 +111,29 @@ public class PostView {
     }
 
     public Optional<Category> readNewCategory() {
-        printCategoryMenu();
-        System.out.print("카테고리(카테고리를 변경하지 않으려면 Enter): ");
+        while (true) {
+            printCategoryMenu();
+            System.out.print("카테고리(카테고리를 변경하지 않으려면 Enter): ");
 
-        String input = scanner.nextLine();
+            String input = scanner.nextLine();
 
-        if (input.isBlank()) {
-            return Optional.empty();
+            if (input.isBlank()) {
+                return Optional.empty();
+            }
+
+            try {
+                int categoryNumber = Integer.parseInt(input);
+                return Optional.of(Category.fromNumber(categoryNumber));
+            } catch (NumberFormatException e) {
+                System.out.println("숫자를 입력해주세요.");
+            } catch (CustomException e) {
+                System.out.println(e.getMessage());
+            }
         }
-
-        int categoryNumber = Integer.parseInt(input);
-        return Optional.of(Category.fromNumber(categoryNumber));
     }
 
     public long readPostNumber(String message) {
-        System.out.print(message);
-        return Long.parseLong(scanner.nextLine());
+        return readLong(message);
     }
 
     public void printPosts(List<Post> posts) {
