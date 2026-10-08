@@ -1,10 +1,7 @@
 package org.sopt;
 
-import org.sopt.exception.CustomException;
-import org.sopt.exception.ErrorCode;
 import org.sopt.request.CreatePostRequest;
 import org.sopt.request.UpdatePostRequest;
-import org.sopt.response.FailureResponse;
 import org.sopt.response.PostResponse;
 import org.sopt.response.Response;
 
@@ -40,10 +37,16 @@ public class Main {
                 }
                 case 4 -> {
                     long id = view.readPostNumber("수정할 게시글 번호: ");
-                    UpdatePostRequest request = view.readUpdatePostRequest();
-                    Response<Void> response = controller.updatePost(id, request);
 
-                    view.printResponse(response);
+                    Response<PostResponse> findResponse = controller.readPost(id);
+                    if (!findResponse.success()) {
+                        view.printResponse(findResponse);
+                    } else {
+                        UpdatePostRequest request = view.readUpdatePostRequest();
+                        Response<Void> response = controller.updatePost(id, request);
+
+                        view.printResponse(response);
+                    }
                 }
                 case 5 -> {
                     long id = view.readPostNumber("삭제할 게시글 번호: ");
@@ -56,11 +59,7 @@ public class Main {
                     return;
                 }
                 default -> {
-                    Response<Void> response = new FailureResponse<>(
-                            ErrorCode.INVALID_INPUT.getMessage()
-                    );
-
-                    view.printResponse(response);
+                    view.printMessage("잘못된 입력입니다.");
                 }
             }
         }

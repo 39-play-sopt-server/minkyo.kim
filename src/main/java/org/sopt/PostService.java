@@ -15,18 +15,7 @@ public class PostService {
     }
 
     public void createPost(CreatePostRequest request) {
-        if (request.title().isBlank()) {
-            throw new CustomException(ErrorCode.TITLE_REQUIRED);
-        }
-        if (request.content().isBlank()) {
-            throw new CustomException(ErrorCode.CONTENT_REQUIRED);
-        }
-        if (request.category() == null) {
-            throw new CustomException(ErrorCode.CATEGORY_REQUIRED);
-        }
-        if (request.writer().isBlank()) {
-            throw new CustomException(ErrorCode.WRITER_REQUIRED);
-        }
+        validateRequest(request);
 
         Post post = new Post(request.title(), request.content(), request.category(), request.writer());
         repository.save(post);
@@ -63,15 +52,26 @@ public class PostService {
         repository.delete(id);
     }
 
-    public boolean hasNoPosts() {
-        return repository.isEmpty();
-    }
-
     private Post getPost(long id) {
         if (!repository.existsById(id)) {
             throw new CustomException(ErrorCode.POST_NOT_FOUND);
         }
 
         return repository.find(id);
+    }
+
+    private void validateRequest(CreatePostRequest request) {
+        if (request.title().isBlank()) {
+            throw new CustomException(ErrorCode.TITLE_REQUIRED);
+        }
+        if (request.content().isBlank()) {
+            throw new CustomException(ErrorCode.CONTENT_REQUIRED);
+        }
+        if (request.category() == null) {
+            throw new CustomException(ErrorCode.CATEGORY_REQUIRED);
+        }
+        if (request.writer().isBlank()) {
+            throw new CustomException(ErrorCode.WRITER_REQUIRED);
+        }
     }
 }

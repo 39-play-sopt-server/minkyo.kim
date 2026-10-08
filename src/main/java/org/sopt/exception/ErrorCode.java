@@ -1,13 +1,12 @@
 package org.sopt.exception;
 
 public enum ErrorCode {
-    INVALID_INPUT("잘못된 입력입니다."),
     POST_NOT_FOUND("존재하지 않는 게시글입니다."),
+    CATEGORY_NOT_FOUND("존재하지 않는 카테고리입니다."),
     TITLE_REQUIRED("제목은 필수 입력 항목입니다."),
     CONTENT_REQUIRED("내용은 필수 입력 항목입니다."),
     CATEGORY_REQUIRED("카테고리는 필수 입력 항목입니다."),
-    WRITER_REQUIRED("작성자는 필수 입력 항목입니다."),
-    CATEGORY_NOT_FOUND("존재하지 않는 카테고리입니다.");
+    WRITER_REQUIRED("작성자는 필수 입력 항목입니다.");
 
     private final String message;
 

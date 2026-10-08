@@ -1,4 +1,3 @@
-// PostView
 package org.sopt;
 
 import org.sopt.exception.CustomException;
