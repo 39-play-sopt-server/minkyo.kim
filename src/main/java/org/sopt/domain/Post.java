@@ -1,4 +1,4 @@
-package org.sopt;
+package org.sopt.domain;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -75,7 +75,10 @@ public class Post {
         return this.updatedAt;
     }
 
-    void assignId(long id) {
+    public void assignId(long id) {
+        if (this.id != null) {
+            throw new IllegalStateException("게시글 ID는 다시 할당할 수 없습니다.");
+        }
         this.id = id;
     }
 

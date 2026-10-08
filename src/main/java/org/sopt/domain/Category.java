@@ -1,4 +1,4 @@
-package org.sopt;
+package org.sopt.domain;
 
 import org.sopt.exception.CustomException;
 import org.sopt.exception.ErrorCode;

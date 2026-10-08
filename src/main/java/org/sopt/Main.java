@@ -1,9 +1,13 @@
 package org.sopt;
 
+import org.sopt.client.PostView;
 import org.sopt.request.CreatePostRequest;
 import org.sopt.request.UpdatePostRequest;
 import org.sopt.response.PostResponse;
 import org.sopt.response.Response;
+import org.sopt.server.PostController;
+import org.sopt.server.PostRepository;
+import org.sopt.server.PostService;
 
 import java.util.List;
 

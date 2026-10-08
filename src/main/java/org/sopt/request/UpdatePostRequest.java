@@ -1,6 +1,6 @@
 package org.sopt.request;
 
-import org.sopt.Category;
+import org.sopt.domain.Category;
 
 import java.util.Optional;
 

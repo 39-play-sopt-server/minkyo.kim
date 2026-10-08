@@ -1,5 +1,6 @@
-package org.sopt;
+package org.sopt.client;
 
+import org.sopt.domain.Category;
 import org.sopt.exception.CustomException;
 import org.sopt.request.CreatePostRequest;
 import org.sopt.request.UpdatePostRequest;

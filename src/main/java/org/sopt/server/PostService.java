@@ -1,5 +1,6 @@
-package org.sopt;
+package org.sopt.server;
 
+import org.sopt.domain.Post;
 import org.sopt.exception.CustomException;
 import org.sopt.exception.ErrorCode;
 import org.sopt.request.CreatePostRequest;
