@@ -41,11 +41,12 @@ public class PostService {
     }
 
     public boolean updatePost(long id, UpdatePostRequest request) {
+        Post originalPost = getPost(id);
+
         if (request.title().isEmpty() && request.content().isEmpty() && request.category().isEmpty()) {
             return false;
         }
 
-        Post originalPost = getPost(id);
         Post updatedPost = originalPost.with(
                 request.title(),
                 request.content(),

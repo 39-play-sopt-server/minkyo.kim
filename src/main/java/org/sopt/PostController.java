@@ -1,109 +1,94 @@
 package org.sopt;
 
 import org.sopt.exception.CustomException;
-import org.sopt.exception.ErrorCode;
 import org.sopt.request.CreatePostRequest;
 import org.sopt.request.UpdatePostRequest;
+import org.sopt.response.FailureResponse;
+import org.sopt.response.PostResponse;
+import org.sopt.response.Response;
+import org.sopt.response.SuccessResponse;
 
 import java.util.List;
 
 public class PostController {
-    private final PostView view;
     private final PostService service;
 
-    public PostController(PostView view, PostService service) {
-        this.view = view;
+    public PostController(PostService service) {
         this.service = service;
     }
 
-    public void run() {
-        while (true) {
-            try {
-                view.printMenu();
-                int command = view.readCommand();
-                switch (command) {
-                    case 1 -> createPost();
-                    case 2 -> readPosts();
-                    case 3 -> readPost();
-                    case 4 -> updatePost();
-                    case 5 -> deletePost();
-                    case 6 -> {
-                        view.printMessage("프로그램을 종료합니다.");
-                        return;
-                    }
-                    default -> throw new CustomException(ErrorCode.INVALID_INPUT);
-                }
-            } catch (CustomException e) {
-                view.printMessage(e.getMessage());
-            }
+    public Response<Void> createPost(CreatePostRequest request) {
+        try {
+            service.createPost(request);
+
+            return new SuccessResponse<>(
+                    "게시글이 작성되었습니다.",
+                    null
+            );
+        } catch (CustomException e) {
+            return new FailureResponse<>(
+                    e.getMessage()
+            );
         }
     }
 
-    private void createPost() {
-        String title = view.readTitle();
-        String content = view.readContent();
-        Category category = view.readCategory();
-        String writer = view.readWriter();
+    public Response<List<PostResponse>> readPosts() {
+        List<PostResponse> posts = service.readPosts().stream()
+                .map(PostResponse::from)
+                .toList();
 
-        CreatePostRequest request = new CreatePostRequest(title, content, category, writer);
+        String message = posts.isEmpty() ? "게시글이 없습니다." : null;
 
-        service.createPost(request);
-        view.printMessage("게시글이 작성되었습니다.");
-    }
-
-    private void readPosts() {
-        List<Post> posts = service.readPosts();
-        if (posts.isEmpty()) {
-            view.printMessage("게시글이 없습니다.");
-            return;
-        }
-
-        view.printPosts(posts);
-    }
-
-    private void readPost() {
-        if (service.hasNoPosts()) {
-            view.printMessage("게시글이 없습니다.");
-            return;
-        }
-
-        long id = view.readPostNumber("조회할 게시글 번호: ");
-
-        Post post = service.readPost(id);
-        view.printPost(post);
-    }
-
-    private void updatePost() {
-        if (service.hasNoPosts()) {
-            view.printMessage("게시글이 없습니다.");
-            return;
-        }
-
-        long id = view.readPostNumber("수정할 게시글 번호: ");
-
-        UpdatePostRequest request = new UpdatePostRequest(
-                view.readNewTitle(),
-                view.readNewContent(),
-                view.readNewCategory()
+        return new SuccessResponse<>(
+                message,
+                posts
         );
+    }
 
-        boolean isUpdated = service.updatePost(id, request);
-        if (isUpdated) {
-            view.printMessage("게시글이 수정되었습니다.");
-        } else {
-            view.printMessage("수정된 내용이 없습니다.");
+    public Response<PostResponse> readPost(long id) {
+        try {
+            Post post = service.readPost(id);
+
+            return new SuccessResponse<>(
+                    null,
+                    PostResponse.from(post)
+            );
+        } catch (CustomException e) {
+            return new FailureResponse<>(
+                    e.getMessage()
+            );
         }
     }
 
-    private void deletePost() {
-        if (service.hasNoPosts()) {
-            view.printMessage("게시글이 없습니다.");
-            return;
+    public Response<Void> updatePost(long id, UpdatePostRequest request) {
+        try {
+            boolean isUpdated = service.updatePost(id, request);
+            String message = isUpdated ? "게시글이 수정되었습니다." : "수정된 내용이 없습니다.";
+
+            return new SuccessResponse<>(
+                    message,
+                    null
+            );
+        } catch (CustomException e) {
+            return new FailureResponse<>(
+                    e.getMessage()
+            );
         }
 
-        long id = view.readPostNumber("삭제할 게시글 번호: ");
+    }
 
-        service.deletePost(id);
-        view.printMessage("게시글이 삭제되었습니다.");
+    public Response<Void> deletePost(long id) {
+        try {
+            service.deletePost(id);
+
+            return new SuccessResponse<>(
+                    "게시글이 삭제되었습니다.",
+                    null
+            );
+        } catch (CustomException e) {
+            return new FailureResponse<>(
+                    e.getMessage()
+            );
+        }
     }
 }
