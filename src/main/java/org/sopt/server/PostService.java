@@ -18,7 +18,12 @@ public class PostService {
     public void createPost(CreatePostRequest request) {
         validateRequest(request);
 
-        Post post = new Post(request.title(), request.content(), request.category(), request.writer());
+        Post post = new Post(
+                request.title(),
+                request.content(),
+                request.category(),
+                request.writer()
+        );
         repository.save(post);
     }
 
@@ -33,7 +38,7 @@ public class PostService {
     public boolean updatePost(long id, UpdatePostRequest request) {
         Post originalPost = getPost(id);
 
-        if (request.title().isEmpty() && request.content().isEmpty() && request.category().isEmpty()) {
+        if (request.isEmpty()) {
             return false;
         }
 
@@ -42,7 +47,6 @@ public class PostService {
                 request.content(),
                 request.category()
         );
-
         repository.update(updatedPost);
 
         return true;

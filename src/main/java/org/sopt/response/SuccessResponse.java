@@ -1,6 +1,6 @@
 package org.sopt.response;
 
-public record SuccessResponse<T> (
+public record SuccessResponse<T>(
         String message,
         T data
 ) implements Response<T> {

@@ -9,4 +9,7 @@ public record UpdatePostRequest(
         Optional<String> content,
         Optional<Category> category
 ) {
+    public boolean isEmpty() {
+        return title.isEmpty() && content().isEmpty() && category.isEmpty();
+    }
 }

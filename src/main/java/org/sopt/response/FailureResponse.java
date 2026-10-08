@@ -1,6 +1,6 @@
 package org.sopt.response;
 
-public record FailureResponse<T> (
+public record FailureResponse<T>(
         String message
 ) implements Response<T> {
     @Override

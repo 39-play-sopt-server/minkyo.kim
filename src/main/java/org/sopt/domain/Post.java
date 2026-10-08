@@ -82,7 +82,11 @@ public class Post {
         this.id = id;
     }
 
-    public Post with(Optional<String> newTitle, Optional<String> newContent, Optional<Category> newCategory) {
+    public Post with(
+            Optional<String> newTitle,
+            Optional<String> newContent,
+            Optional<Category> newCategory
+    ) {
         return new Post(
                 this.id,
                 newTitle.orElse(this.title),

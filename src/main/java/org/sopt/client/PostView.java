@@ -24,147 +24,16 @@ public class PostView {
         System.out.println("6. 종료");
     }
 
-    public CreatePostRequest readCreatePostRequest() {
-        return new CreatePostRequest(
-                readTitle(),
-                readContent(),
-                readCategory(),
-                readWriter()
-        );
-    }
-
-    public UpdatePostRequest readUpdatePostRequest() {
-        return new UpdatePostRequest(
-                readNewTitle(),
-                readNewContent(),
-                readNewCategory()
-        );
-    }
-
-    private int readInt(String message) {
-        while(true) {
-            System.out.print(message);
-            String input = scanner.nextLine();
-
-            try {
-                return Integer.parseInt(input);
-            } catch (NumberFormatException e) {
-                System.out.println("숫자를 입력해주세요.");
-            }
-        }
-    }
-
-    private long readLong(String message) {
-        while(true) {
-            System.out.print(message);
-            String input = scanner.nextLine();
-
-            try {
-                return Long.parseLong(input);
-            } catch (NumberFormatException e) {
-                System.out.println("숫자를 입력해주세요.");
-            }
-        }
-    }
-
-    public int readCommand() {
-        return readInt("작업 선택: ");
-    }
-
-    public String readTitle() {
-        System.out.print("제목: ");
-        return scanner.nextLine();
-    }
-
-    public String readContent() {
-        System.out.print("내용: ");
-        return scanner.nextLine();
-    }
-
-    public String readWriter() {
-        System.out.print("작성자: ");
-        return scanner.nextLine();
-    }
-
-    private void printCategoryMenu() {
-        System.out.println("=== 카테고리 ===");
-
-        for (Category category : Category.values()) {
-            System.out.println(category.getNumber() + ". " + category.getName());
-        }
-        System.out.println("==============");
-    }
-
-    public Category readCategory() {
-        while (true) {
-            printCategoryMenu();
-
-            int categoryNumber = readInt("카테고리: ");
-
-            try {
-                return Category.fromNumber(categoryNumber);
-            } catch (CustomException e) {
-                System.out.println(e.getMessage());
-            }
-        }
-    }
-
-    public Optional<String> readNewTitle() {
-        System.out.print("제목(제목을 변경하지 않으려면 Enter): ");
-        String title = scanner.nextLine();
-
-        if (title.isBlank()) {
-            return Optional.empty();
-        }
-
-        return Optional.of(title);
-    }
-
-    public Optional<String> readNewContent() {
-        System.out.print("내용(내용을 변경하지 않으려면 Enter): ");
-        String content = scanner.nextLine();
-
-        if (content.isBlank()) {
-            return Optional.empty();
-        }
-
-        return Optional.of(content);
-    }
-
-    public Optional<Category> readNewCategory() {
-        while (true) {
-            printCategoryMenu();
-            System.out.print("카테고리(카테고리를 변경하지 않으려면 Enter): ");
-
-            String input = scanner.nextLine();
-
-            if (input.isBlank()) {
-                return Optional.empty();
-            }
-
-            try {
-                int categoryNumber = Integer.parseInt(input);
-                return Optional.of(Category.fromNumber(categoryNumber));
-            } catch (NumberFormatException e) {
-                System.out.println("숫자를 입력해주세요.");
-            } catch (CustomException e) {
-                System.out.println(e.getMessage());
-            }
-        }
-    }
-
-    public long readPostNumber(String message) {
-        return readLong(message);
-    }
-
     public void printPosts(Response<List<PostResponse>> response) {
         if (response.message() != null) {
             System.out.println(response.message());
+        }
+
+        if (!response.success()) {
             return;
         }
 
-        List<PostResponse> posts = response.data();
-        for (PostResponse post : posts) {
+        for (PostResponse post : response.data()) {
             System.out.println("[id: " + post.id() + "] " + post.title());
         }
     }
@@ -191,11 +60,144 @@ public class PostView {
         }
     }
 
+    public void printResponse(Response<?> response) {
+        System.out.println(response.message());
+    }
+
     public void printMessage(String message) {
         System.out.println(message);
     }
 
-    public void printResponse(Response<?> response) {
-        System.out.println(response.message());
+    public int readCommand() {
+        return readInt("작업 선택: ");
+    }
+
+    public long readPostNumber(String message) {
+        return readLong(message);
+    }
+
+    public CreatePostRequest readCreatePostRequest() {
+        return new CreatePostRequest(
+                readTitle(),
+                readContent(),
+                readCategory(),
+                readWriter()
+        );
+    }
+
+    public UpdatePostRequest readUpdatePostRequest() {
+        return new UpdatePostRequest(
+                readNewTitle(),
+                readNewContent(),
+                readNewCategory()
+        );
+    }
+
+    private String readTitle() {
+        System.out.print("제목: ");
+        return scanner.nextLine();
+    }
+
+    private String readContent() {
+        System.out.print("내용: ");
+        return scanner.nextLine();
+    }
+
+    private String readWriter() {
+        System.out.print("작성자: ");
+        return scanner.nextLine();
+    }
+
+    private Category readCategory() {
+        while (true) {
+            printCategoryMenu();
+
+            int categoryNumber = readInt("카테고리: ");
+
+            try {
+                return Category.fromNumber(categoryNumber);
+            } catch (CustomException e) {
+                System.out.println(e.getMessage());
+            }
+        }
+    }
+
+    private Optional<String> readNewTitle() {
+        System.out.print("제목(제목을 변경하지 않으려면 Enter): ");
+        String title = scanner.nextLine();
+
+        if (title.isBlank()) {
+            return Optional.empty();
+        }
+
+        return Optional.of(title);
+    }
+
+    private Optional<String> readNewContent() {
+        System.out.print("내용(내용을 변경하지 않으려면 Enter): ");
+        String content = scanner.nextLine();
+
+        if (content.isBlank()) {
+            return Optional.empty();
+        }
+
+        return Optional.of(content);
+    }
+
+    private Optional<Category> readNewCategory() {
+        while (true) {
+            printCategoryMenu();
+            System.out.print("카테고리(카테고리를 변경하지 않으려면 Enter): ");
+
+            String input = scanner.nextLine();
+
+            if (input.isBlank()) {
+                return Optional.empty();
+            }
+
+            try {
+                int categoryNumber = Integer.parseInt(input);
+                return Optional.of(Category.fromNumber(categoryNumber));
+            } catch (NumberFormatException e) {
+                System.out.println("숫자를 입력해주세요.");
+            } catch (CustomException e) {
+                System.out.println(e.getMessage());
+            }
+        }
+    }
+
+    private int readInt(String message) {
+        while (true) {
+            System.out.print(message);
+            String input = scanner.nextLine();
+
+            try {
+                return Integer.parseInt(input);
+            } catch (NumberFormatException e) {
+                System.out.println("숫자를 입력해주세요.");
+            }
+        }
+    }
+
+    private long readLong(String message) {
+        while (true) {
+            System.out.print(message);
+            String input = scanner.nextLine();
+
+            try {
+                return Long.parseLong(input);
+            } catch (NumberFormatException e) {
+                System.out.println("숫자를 입력해주세요.");
+            }
+        }
+    }
+
+    private void printCategoryMenu() {
+        System.out.println("=== 카테고리 ===");
+
+        for (Category category : Category.values()) {
+            System.out.println(category.getNumber() + ". " + category.getName());
+        }
+        System.out.println("==============");
     }
 }

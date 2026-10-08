@@ -75,7 +75,6 @@ public class PostController {
                     e.getMessage()
             );
         }
-
     }
 
     public Response<Void> deletePost(long id) {
