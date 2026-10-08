@@ -11,7 +11,15 @@ import org.sopt.server.PostService;
 
 import java.util.List;
 
+/**
+ * 게시판 애플리케이션을 실행하고 클라이언트의 전체 요청 흐름을 조정합니다.
+ */
 public class Main {
+    /**
+     * 클라이언트와 서버 객체를 조립하고 사용자 명령을 반복해서 처리합니다.
+     *
+     * @param args 프로그램 실행 인자
+     */
     public static void main(String[] args) {
         PostView view = new PostView();
         PostRepository repository = new PostRepository();

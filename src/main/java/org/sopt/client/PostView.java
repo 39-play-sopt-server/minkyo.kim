@@ -11,9 +11,15 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 
+/**
+ * 콘솔을 통해 사용자 입력을 받고 처리 결과를 출력합니다.
+ */
 public class PostView {
     private final Scanner scanner = new Scanner(System.in);
 
+    /**
+     * 게시판에서 수행할 수 있는 작업 목록을 출력합니다.
+     */
     public void printMenu() {
         System.out.println("\n=== 게시판 ===");
         System.out.println("1. 게시글 작성");
@@ -24,6 +30,11 @@ public class PostView {
         System.out.println("6. 종료");
     }
 
+    /**
+     * 게시글 목록 조회 응답을 출력합니다.
+     *
+     * @param response 게시글 목록 조회 응답
+     */
     public void printPosts(Response<List<PostResponse>> response) {
         if (response.message() != null) {
             System.out.println(response.message());
@@ -38,6 +49,11 @@ public class PostView {
         }
     }
 
+    /**
+     * 게시글 단건 조회 응답을 출력합니다.
+     *
+     * @param response 게시글 단건 조회 응답
+     */
     public void printPost(Response<PostResponse> response) {
         if (!response.success()) {
             System.out.println(response.message());
@@ -60,22 +76,48 @@ public class PostView {
         }
     }
 
+    /**
+     * 서버가 반환한 공통 응답 메시지를 출력합니다.
+     *
+     * @param response 서버 응답
+     */
     public void printResponse(Response<?> response) {
         System.out.println(response.message());
     }
 
+    /**
+     * 클라이언트에서 생성한 일반 메시지를 출력합니다.
+     *
+     * @param message 출력할 메시지
+     */
     public void printMessage(String message) {
         System.out.println(message);
     }
 
+    /**
+     * 사용자가 선택한 메뉴 명령을 읽습니다.
+     *
+     * @return 사용자가 입력한 메뉴 번호
+     */
     public int readCommand() {
         return readInt("작업 선택: ");
     }
 
+    /**
+     * 게시글 조회·수정·삭제에 사용할 게시글 ID를 읽습니다.
+     *
+     * @param message 입력 안내 메시지
+     * @return 사용자가 입력한 게시글 ID
+     */
     public long readPostNumber(String message) {
         return readLong(message);
     }
 
+    /**
+     * 게시글 생성에 필요한 입력을 모아 생성 요청을 반환합니다.
+     *
+     * @return 게시글 생성 요청
+     */
     public CreatePostRequest readCreatePostRequest() {
         return new CreatePostRequest(
                 readTitle(),
@@ -85,6 +127,11 @@ public class PostView {
         );
     }
 
+    /**
+     * 게시글 수정에 필요한 입력을 모아 수정 요청을 반환합니다.
+     *
+     * @return 게시글 수정 요청
+     */
     public UpdatePostRequest readUpdatePostRequest() {
         return new UpdatePostRequest(
                 readNewTitle(),

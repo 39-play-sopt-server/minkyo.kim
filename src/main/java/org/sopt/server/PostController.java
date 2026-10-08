@@ -11,6 +11,9 @@ import org.sopt.response.SuccessResponse;
 
 import java.util.List;
 
+/**
+ * 클라이언트 요청을 Service에 전달하고 처리 결과를 공통 응답으로 변환합니다.
+ */
 public class PostController {
     private final PostService service;
 
@@ -18,6 +21,12 @@ public class PostController {
         this.service = service;
     }
 
+    /**
+     * 게시글 생성 요청을 처리합니다.
+     *
+     * @param request 게시글 생성 요청
+     * @return 게시글 생성 처리 결과
+     */
     public Response<Void> createPost(CreatePostRequest request) {
         try {
             service.createPost(request);
@@ -33,6 +42,11 @@ public class PostController {
         }
     }
 
+    /**
+     * 전체 게시글 목록을 조회합니다.
+     *
+     * @return 게시글 목록 조회 결과
+     */
     public Response<List<PostResponse>> readPosts() {
         List<PostResponse> posts = service.readPosts().stream()
                 .map(PostResponse::from)
@@ -46,6 +60,12 @@ public class PostController {
         );
     }
 
+    /**
+     * 지정한 ID의 게시글을 조회합니다.
+     *
+     * @param id 조회할 게시글 ID
+     * @return 게시글 단건 조회 결과
+     */
     public Response<PostResponse> readPost(long id) {
         try {
             Post post = service.readPost(id);
@@ -61,6 +81,13 @@ public class PostController {
         }
     }
 
+    /**
+     * 지정한 ID의 게시글을 수정합니다.
+     *
+     * @param id 수정할 게시글 ID
+     * @param request 게시글 수정 요청
+     * @return 게시글 수정 처리 결과
+     */
     public Response<Void> updatePost(long id, UpdatePostRequest request) {
         try {
             boolean isUpdated = service.updatePost(id, request);
@@ -77,6 +104,12 @@ public class PostController {
         }
     }
 
+    /**
+     * 지정한 ID의 게시글을 삭제합니다.
+     *
+     * @param id 삭제할 게시글 ID
+     * @return 게시글 삭제 처리 결과
+     */
     public Response<Void> deletePost(long id) {
         try {
             service.deletePost(id);
