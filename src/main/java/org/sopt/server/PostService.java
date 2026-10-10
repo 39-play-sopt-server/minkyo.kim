@@ -5,12 +5,14 @@ import org.sopt.exception.CustomException;
 import org.sopt.exception.ErrorCode;
 import org.sopt.request.CreatePostRequest;
 import org.sopt.request.UpdatePostRequest;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 /**
  * 게시글 생성, 조회, 수정, 삭제와 관련된 비즈니스 로직을 처리합니다.
  */
+@Service
 public class PostService {
     private final PostRepository repository;
 
