@@ -1,6 +1,7 @@
 package org.sopt.server;
 
 import org.sopt.domain.Post;
+import org.springframework.stereotype.Repository;
 
 import java.util.HashMap;
 import java.util.List;
@@ -9,6 +10,7 @@ import java.util.Map;
 /**
  * 게시글을 메모리에 저장하고 관리합니다.
  */
+@Repository
 public class PostRepository {
     private final Map<Long, Post> posts = new HashMap<>();
 

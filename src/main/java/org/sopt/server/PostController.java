@@ -8,12 +8,15 @@ import org.sopt.response.FailureResponse;
 import org.sopt.response.PostResponse;
 import org.sopt.response.Response;
 import org.sopt.response.SuccessResponse;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 /**
  * 클라이언트 요청을 Service에 전달하고 처리 결과를 공통 응답으로 변환합니다.
  */
+@RestController
+@RequestMapping(path = "/api/v1/posts")
 public class PostController {
     private final PostService service;
 
@@ -27,7 +30,10 @@ public class PostController {
      * @param request 게시글 생성 요청
      * @return 게시글 생성 처리 결과
      */
-    public Response<Void> createPost(CreatePostRequest request) {
+    @PostMapping
+    public Response<Void> createPost(
+            @RequestBody(required = true) CreatePostRequest request
+    ) {
         try {
             service.createPost(request);
 
@@ -47,6 +53,7 @@ public class PostController {
      *
      * @return 게시글 목록 조회 결과
      */
+    @GetMapping
     public Response<List<PostResponse>> readPosts() {
         List<PostResponse> posts = service.readPosts().stream()
                 .map(PostResponse::from)
@@ -66,7 +73,10 @@ public class PostController {
      * @param id 조회할 게시글 ID
      * @return 게시글 단건 조회 결과
      */
-    public Response<PostResponse> readPost(long id) {
+    @GetMapping(path = "/{id}")
+    public Response<PostResponse> readPost(
+            @PathVariable long id
+    ) {
         try {
             Post post = service.readPost(id);
 
@@ -88,7 +98,11 @@ public class PostController {
      * @param request 게시글 수정 요청
      * @return 게시글 수정 처리 결과
      */
-    public Response<Void> updatePost(long id, UpdatePostRequest request) {
+    @PatchMapping(path = "/{id}")
+    public Response<Void> updatePost(
+            @PathVariable long id,
+            @RequestBody(required = true) UpdatePostRequest request
+    ) {
         try {
             boolean isUpdated = service.updatePost(id, request);
             String message = isUpdated ? "게시글이 수정되었습니다." : "수정된 내용이 없습니다.";
@@ -110,7 +124,10 @@ public class PostController {
      * @param id 삭제할 게시글 ID
      * @return 게시글 삭제 처리 결과
      */
-    public Response<Void> deletePost(long id) {
+    @DeleteMapping(path = "/{id}")
+    public Response<Void> deletePost(
+            @PathVariable long id
+    ) {
         try {
             service.deletePost(id);
 
