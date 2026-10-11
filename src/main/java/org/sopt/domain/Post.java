@@ -13,6 +13,7 @@ public class Post {
     private final String content;
     private final Category category;
     private final String writer;
+    private final long viewCount;
     private final LocalDateTime createdAt;
     private final LocalDateTime updatedAt;
 
@@ -37,6 +38,7 @@ public class Post {
         this.content = content;
         this.category = category;
         this.writer = writer;
+        this.viewCount = 0;
         this.createdAt = now;
         this.updatedAt = now;
     }
@@ -47,6 +49,7 @@ public class Post {
             String content,
             Category category,
             String writer,
+            long viewCount,
             LocalDateTime createdAt,
             LocalDateTime updatedAt
     ) {
@@ -55,6 +58,7 @@ public class Post {
         this.content = content;
         this.category = category;
         this.writer = writer;
+        this.viewCount = viewCount;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
@@ -79,6 +83,10 @@ public class Post {
         return this.writer;
     }
 
+    public long getViewCount() {
+        return this.viewCount;
+    }
+
     public LocalDateTime getCreatedAt() {
         return this.createdAt;
     }
@@ -101,7 +109,7 @@ public class Post {
 
     /**
      * 전달된 변경 사항을 반영한 새로운 게시글을 반환합니다.
-     * 값이 없는 항목은 기존 값을 유지하며 작성자와 생성일은 변경하지 않습니다.
+     * 값이 없는 항목은 기존 값을 유지하며 작성자･생성일･조회수는 변경하지 않습니다.
      *
      * @param newTitle 변경할 제목
      * @param newContent 변경할 내용
@@ -119,6 +127,7 @@ public class Post {
                 newContent.orElse(this.content),
                 newCategory.orElse(this.category),
                 this.writer,
+                this.viewCount,
                 this.createdAt,
                 LocalDateTime.now()
         );
