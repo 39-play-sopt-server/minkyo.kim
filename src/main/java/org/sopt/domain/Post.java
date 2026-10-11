@@ -13,7 +13,7 @@ public class Post {
     private final String content;
     private final Category category;
     private final String writer;
-    private final long viewCount;
+    private long viewCount;
     private final LocalDateTime createdAt;
     private final LocalDateTime updatedAt;
 
@@ -131,5 +131,12 @@ public class Post {
                 this.createdAt,
                 LocalDateTime.now()
         );
+    }
+
+    /**
+     * 게시글의 조회수를 1 증가시킵니다.
+     */
+    public void increaseViewCount() {
+        this.viewCount++;
     }
 }

@@ -44,7 +44,10 @@ public class PostService {
      * @return 조회된 게시글
      */
     public Post readPost(long id) {
-        return getPost(id);
+        Post post = getPost(id);
+        post.increaseViewCount();
+
+        return post;
     }
 
     /**
