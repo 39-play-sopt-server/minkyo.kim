@@ -5,7 +5,7 @@ import org.sopt.domain.Post;
 import org.sopt.request.CreatePostRequest;
 import org.sopt.request.UpdatePostRequest;
 import org.sopt.response.PostResponse;
-import org.sopt.response.Response;
+import org.sopt.response.ApiResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,7 +30,7 @@ public class PostController {
      * @return 게시글 생성 처리 결과
      */
     @PostMapping
-    public ResponseEntity<Response<Void>> createPost(
+    public ResponseEntity<ApiResponse<Void>> createPost(
             @RequestBody(required = true) CreatePostRequest request
     ) {
         service.createPost(request);
@@ -39,7 +39,7 @@ public class PostController {
 
         return ResponseEntity
                 .status(code.getHttpStatus())
-                .body(Response.of(code, null));
+                .body(ApiResponse.of(code, null));
     }
 
     /**
@@ -48,7 +48,7 @@ public class PostController {
      * @return 게시글 목록 조회 결과
      */
     @GetMapping
-    public ResponseEntity<Response<List<PostResponse>>> readPosts() {
+    public ResponseEntity<ApiResponse<List<PostResponse>>> readPosts() {
         List<PostResponse> posts = service.readPosts().stream()
                 .map(PostResponse::from)
                 .toList();
@@ -59,7 +59,7 @@ public class PostController {
 
         return ResponseEntity
                 .status(code.getHttpStatus())
-                .body(Response.of(code, posts));
+                .body(ApiResponse.of(code, posts));
     }
 
     /**
@@ -69,7 +69,7 @@ public class PostController {
      * @return 게시글 단건 조회 결과
      */
     @GetMapping(path = "/{id}")
-    public ResponseEntity<Response<PostResponse>> readPost(
+    public ResponseEntity<ApiResponse<PostResponse>> readPost(
             @PathVariable long id
     ) {
         Post post = service.readPost(id);
@@ -77,7 +77,7 @@ public class PostController {
 
         return ResponseEntity
                 .status(code.getHttpStatus())
-                .body(Response.of(
+                .body(ApiResponse.of(
                         code,
                         PostResponse.from(post)
                 ));
@@ -91,7 +91,7 @@ public class PostController {
      * @return 게시글 수정 처리 결과
      */
     @PatchMapping(path = "/{id}")
-    public ResponseEntity<Response<Void>> updatePost(
+    public ResponseEntity<ApiResponse<Void>> updatePost(
             @PathVariable long id,
             @RequestBody(required = true) UpdatePostRequest request
     ) {
@@ -102,7 +102,7 @@ public class PostController {
 
         return ResponseEntity
                 .status(code.getHttpStatus())
-                .body(Response.of(code, null));
+                .body(ApiResponse.of(code, null));
     }
 
     /**
@@ -112,7 +112,7 @@ public class PostController {
      * @return 게시글 삭제 처리 결과
      */
     @DeleteMapping(path = "/{id}")
-    public ResponseEntity<Response<Void>> deletePost(
+    public ResponseEntity<ApiResponse<Void>> deletePost(
             @PathVariable long id
     ) {
         service.deletePost(id);
@@ -120,6 +120,6 @@ public class PostController {
 
         return ResponseEntity
                 .status(code.getHttpStatus())
-                .body(Response.of(code, null));
+                .body(ApiResponse.of(code, null));
     }
 }

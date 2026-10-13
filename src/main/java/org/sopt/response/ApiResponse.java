@@ -7,16 +7,16 @@ import org.sopt.common.code.ResponseCode;
  *
  * @param <T> 응답 데이터 타입
  */
-public record Response<T>(
+public record ApiResponse<T>(
     String code,
     String message,
     T data
 ){
-    public static <T> Response<T> of(
+    public static <T> ApiResponse<T> of(
             ResponseCode responseCode,
             T data
     ) {
-        return new Response<>(
+        return new ApiResponse<>(
                 responseCode.getCode(),
                 responseCode.getMessage(),
                 data
