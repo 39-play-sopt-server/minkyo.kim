@@ -6,6 +6,8 @@ import org.sopt.request.CreatePostRequest;
 import org.sopt.request.UpdatePostRequest;
 import org.sopt.response.PostResponse;
 import org.sopt.response.Response;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,23 +31,25 @@ public class PostController {
      * @return 게시글 생성 처리 결과
      */
     @PostMapping
-    public Response<Void> createPost(
+    public ResponseEntity<Response<Void>> createPost(
             @RequestBody(required = true) CreatePostRequest request
     ) {
         try {
             service.createPost(request);
 
-            return new Response<>(
-                    "SUCCESS",
-                    "게시글이 작성되었습니다.",
-                    null
-            );
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new Response<>(
+                            "SUCCESS",
+                            "게시글이 작성되었습니다.",
+                            null
+                    ));
         } catch (CustomException e) {
-            return new Response<>(
-                    e.getErrorCode().name(),
-                    e.getMessage(),
-                    null
-            );
+            return ResponseEntity.status(e.getErrorCode().getHttpStatus())
+                    .body(new Response<>(
+                            e.getErrorCode().name(),
+                            e.getMessage(),
+                            null
+                    ));
         }
     }
 
@@ -55,18 +59,19 @@ public class PostController {
      * @return 게시글 목록 조회 결과
      */
     @GetMapping
-    public Response<List<PostResponse>> readPosts() {
+    public ResponseEntity<Response<List<PostResponse>>> readPosts() {
         List<PostResponse> posts = service.readPosts().stream()
                 .map(PostResponse::from)
                 .toList();
 
         String message = posts.isEmpty() ? "게시글이 없습니다." : null;
 
-        return new Response<>(
-                "SUCCESS",
-                message,
-                posts
-        );
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new Response<>(
+                        "SUCCESS",
+                        message,
+                        posts
+                ));
     }
 
     /**
@@ -76,23 +81,25 @@ public class PostController {
      * @return 게시글 단건 조회 결과
      */
     @GetMapping(path = "/{id}")
-    public Response<PostResponse> readPost(
+    public ResponseEntity<Response<PostResponse>> readPost(
             @PathVariable long id
     ) {
         try {
             Post post = service.readPost(id);
 
-            return new Response<>(
-                    "SUCCESS",
-                    null,
-                    PostResponse.from(post)
-            );
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new Response<>(
+                            "SUCCESS",
+                            null,
+                            PostResponse.from(post)
+                    ));
         } catch (CustomException e) {
-            return new Response<>(
-                    e.getErrorCode().name(),
-                    e.getMessage(),
-                    null
-            );
+            return ResponseEntity.status(e.getErrorCode().getHttpStatus())
+                    .body(new Response<>(
+                            e.getErrorCode().name(),
+                            e.getMessage(),
+                            null
+                    ));
         }
     }
 
@@ -104,7 +111,7 @@ public class PostController {
      * @return 게시글 수정 처리 결과
      */
     @PatchMapping(path = "/{id}")
-    public Response<Void> updatePost(
+    public ResponseEntity<Response<Void>> updatePost(
             @PathVariable long id,
             @RequestBody(required = true) UpdatePostRequest request
     ) {
@@ -112,17 +119,19 @@ public class PostController {
             boolean isUpdated = service.updatePost(id, request);
             String message = isUpdated ? "게시글이 수정되었습니다." : "수정된 내용이 없습니다.";
 
-            return new Response<>(
-                    "SUCCESS",
-                    message,
-                    null
-            );
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new Response<>(
+                            "SUCCESS",
+                            message,
+                            null
+                    ));
         } catch (CustomException e) {
-            return new Response<>(
-                    e.getErrorCode().name(),
-                    e.getMessage(),
-                    null
-            );
+            return ResponseEntity.status(e.getErrorCode().getHttpStatus())
+                    .body(new Response<>(
+                            e.getErrorCode().name(),
+                            e.getMessage(),
+                            null
+                    ));
         }
     }
 
@@ -133,23 +142,25 @@ public class PostController {
      * @return 게시글 삭제 처리 결과
      */
     @DeleteMapping(path = "/{id}")
-    public Response<Void> deletePost(
+    public ResponseEntity<Response<Void>> deletePost(
             @PathVariable long id
     ) {
         try {
             service.deletePost(id);
 
-            return new Response<>(
-                    "SUCCESS",
-                    "게시글이 삭제되었습니다.",
-                    null
-            );
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new Response<>(
+                            "SUCCESS",
+                            "게시글이 삭제되었습니다.",
+                            null
+                    ));
         } catch (CustomException e) {
-            return new Response<>(
-                    e.getErrorCode().name(),
-                    e.getMessage(),
-                    null
-            );
+            return ResponseEntity.status(e.getErrorCode().getHttpStatus())
+                    .body(new Response<>(
+                            e.getErrorCode().name(),
+                            e.getMessage(),
+                            null
+                    ));
         }
     }
 }
