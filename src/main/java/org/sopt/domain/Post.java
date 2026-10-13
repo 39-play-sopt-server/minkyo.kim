@@ -1,7 +1,7 @@
 package org.sopt.domain;
 
 import org.sopt.common.code.ErrorCode;
-import org.sopt.exception.CustomException;
+import org.sopt.common.exception.CustomException;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
