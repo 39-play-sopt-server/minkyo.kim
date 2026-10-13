@@ -1,7 +1,5 @@
 package org.sopt.request;
 
-import org.sopt.domain.Category;
-
 /**
  * 게시글 생성에 필요한 클라이언트 요청입니다.
  *
@@ -13,7 +11,7 @@ import org.sopt.domain.Category;
 public record CreatePostRequest(
         String title,
         String content,
-        Category category,
+        String category,
         String writer
 ) {
 }

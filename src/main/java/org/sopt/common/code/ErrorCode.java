@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
  */
 public enum ErrorCode implements ResponseCode {
     POST_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 게시글입니다."),
-    CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 카테고리입니다."),
+    INVALID_CATEGORY(HttpStatus.BAD_REQUEST, "존재하지 않는 카테고리입니다."),
     TITLE_REQUIRED(HttpStatus.BAD_REQUEST, "제목은 필수 입력 항목입니다."),
     CONTENT_REQUIRED(HttpStatus.BAD_REQUEST, "내용은 필수 입력 항목입니다."),
     CATEGORY_REQUIRED(HttpStatus.BAD_REQUEST, "카테고리는 필수 입력 항목입니다."),

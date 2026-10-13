@@ -1,5 +1,8 @@
 package org.sopt.domain;
 
+import org.sopt.common.code.ErrorCode;
+import org.sopt.exception.CustomException;
+
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -31,6 +34,8 @@ public class Post {
             Category category,
             String writer
     ) {
+        validate(title, content, category, writer);
+
         LocalDateTime now = LocalDateTime.now();
 
         this.id = null;
@@ -53,6 +58,8 @@ public class Post {
             LocalDateTime createdAt,
             LocalDateTime updatedAt
     ) {
+        validate(title, content, category, writer);
+
         this.id = id;
         this.title = title;
         this.content = content;
@@ -138,5 +145,25 @@ public class Post {
      */
     public void increaseViewCount() {
         this.viewCount++;
+    }
+
+    private static void validate(
+            String title,
+            String content,
+            Category category,
+            String writer
+    ) {
+        if (title == null || title.isBlank()) {
+            throw new CustomException(ErrorCode.TITLE_REQUIRED);
+        }
+        if (content == null || content.isBlank()) {
+            throw new CustomException(ErrorCode.CONTENT_REQUIRED);
+        }
+        if (category == null) {
+            throw new CustomException(ErrorCode.CATEGORY_REQUIRED);
+        }
+        if (writer == null || writer.isBlank()) {
+            throw new CustomException(ErrorCode.WRITER_REQUIRED);
+        }
     }
 }

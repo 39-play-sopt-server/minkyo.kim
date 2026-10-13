@@ -1,5 +1,6 @@
 package org.sopt.server;
 
+import org.sopt.domain.Category;
 import org.sopt.domain.Post;
 import org.sopt.exception.CustomException;
 import org.sopt.common.code.ErrorCode;
@@ -8,6 +9,7 @@ import org.sopt.request.UpdatePostRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * 게시글 생성, 조회, 수정, 삭제와 관련된 비즈니스 로직을 처리합니다.
@@ -26,12 +28,12 @@ public class PostService {
      * @param request 게시글 생성 요청
      */
     public void createPost(CreatePostRequest request) {
-        validateRequest(request);
+        Category category = Category.fromString(request.category());
 
         Post post = new Post(
                 request.title(),
                 request.content(),
-                request.category(),
+                category,
                 request.writer()
         );
         repository.save(post);
@@ -73,10 +75,14 @@ public class PostService {
             return false;
         }
 
+        Optional<Category> category = request
+                .category()
+                .map(Category::fromString);
+
         Post updatedPost = originalPost.with(
                 request.title(),
                 request.content(),
-                request.category()
+                category
         );
         repository.update(updatedPost);
 
@@ -105,25 +111,5 @@ public class PostService {
         }
 
         return repository.find(id);
-    }
-
-    /**
-     * 게시글 생성 요청의 필수 입력값을 검증합니다.
-     *
-     * @param request 검증할 게시글 생성 요청
-     */
-    private void validateRequest(CreatePostRequest request) {
-        if (request.title().isBlank()) {
-            throw new CustomException(ErrorCode.TITLE_REQUIRED);
-        }
-        if (request.content().isBlank()) {
-            throw new CustomException(ErrorCode.CONTENT_REQUIRED);
-        }
-        if (request.category() == null) {
-            throw new CustomException(ErrorCode.CATEGORY_REQUIRED);
-        }
-        if (request.writer().isBlank()) {
-            throw new CustomException(ErrorCode.WRITER_REQUIRED);
-        }
     }
 }
