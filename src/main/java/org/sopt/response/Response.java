@@ -1,7 +1,5 @@
 package org.sopt.response;
 
-import org.sopt.exception.ErrorCode;
-
 /**
  * 서버가 클라이언트에 전달하는 공통 응답 계약입니다.
  *

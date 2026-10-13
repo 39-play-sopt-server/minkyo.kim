@@ -1,7 +1,6 @@
 package org.sopt.server;
 
 import org.sopt.domain.Post;
-import org.sopt.exception.CustomException;
 import org.sopt.request.CreatePostRequest;
 import org.sopt.request.UpdatePostRequest;
 import org.sopt.response.PostResponse;
@@ -34,23 +33,14 @@ public class PostController {
     public ResponseEntity<Response<Void>> createPost(
             @RequestBody(required = true) CreatePostRequest request
     ) {
-        try {
-            service.createPost(request);
+        service.createPost(request);
 
-            return ResponseEntity.status(HttpStatus.OK)
-                    .body(new Response<>(
-                            "SUCCESS",
-                            "게시글이 작성되었습니다.",
-                            null
-                    ));
-        } catch (CustomException e) {
-            return ResponseEntity.status(e.getErrorCode().getHttpStatus())
-                    .body(new Response<>(
-                            e.getErrorCode().name(),
-                            e.getMessage(),
-                            null
-                    ));
-        }
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new Response<>(
+                        "SUCCESS",
+                        "게시글이 작성되었습니다.",
+                        null
+                ));
     }
 
     /**
@@ -67,11 +57,11 @@ public class PostController {
         String message = posts.isEmpty() ? "게시글이 없습니다." : null;
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(new Response<>(
-                        "SUCCESS",
-                        message,
-                        posts
-                ));
+            .body(new Response<>(
+                    "SUCCESS",
+                    message,
+                    posts
+            ));
     }
 
     /**
@@ -84,23 +74,14 @@ public class PostController {
     public ResponseEntity<Response<PostResponse>> readPost(
             @PathVariable long id
     ) {
-        try {
-            Post post = service.readPost(id);
+        Post post = service.readPost(id);
 
-            return ResponseEntity.status(HttpStatus.OK)
-                    .body(new Response<>(
-                            "SUCCESS",
-                            null,
-                            PostResponse.from(post)
-                    ));
-        } catch (CustomException e) {
-            return ResponseEntity.status(e.getErrorCode().getHttpStatus())
-                    .body(new Response<>(
-                            e.getErrorCode().name(),
-                            e.getMessage(),
-                            null
-                    ));
-        }
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new Response<>(
+                        "SUCCESS",
+                        null,
+                        PostResponse.from(post)
+                ));
     }
 
     /**
@@ -115,24 +96,15 @@ public class PostController {
             @PathVariable long id,
             @RequestBody(required = true) UpdatePostRequest request
     ) {
-        try {
-            boolean isUpdated = service.updatePost(id, request);
-            String message = isUpdated ? "게시글이 수정되었습니다." : "수정된 내용이 없습니다.";
+        boolean isUpdated = service.updatePost(id, request);
+        String message = isUpdated ? "게시글이 수정되었습니다." : "수정된 내용이 없습니다.";
 
-            return ResponseEntity.status(HttpStatus.OK)
-                    .body(new Response<>(
-                            "SUCCESS",
-                            message,
-                            null
-                    ));
-        } catch (CustomException e) {
-            return ResponseEntity.status(e.getErrorCode().getHttpStatus())
-                    .body(new Response<>(
-                            e.getErrorCode().name(),
-                            e.getMessage(),
-                            null
-                    ));
-        }
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new Response<>(
+                        "SUCCESS",
+                        message,
+                        null
+                ));
     }
 
     /**
@@ -145,22 +117,13 @@ public class PostController {
     public ResponseEntity<Response<Void>> deletePost(
             @PathVariable long id
     ) {
-        try {
-            service.deletePost(id);
+        service.deletePost(id);
 
-            return ResponseEntity.status(HttpStatus.OK)
-                    .body(new Response<>(
-                            "SUCCESS",
-                            "게시글이 삭제되었습니다.",
-                            null
-                    ));
-        } catch (CustomException e) {
-            return ResponseEntity.status(e.getErrorCode().getHttpStatus())
-                    .body(new Response<>(
-                            e.getErrorCode().name(),
-                            e.getMessage(),
-                            null
-                    ));
-        }
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new Response<>(
+                        "SUCCESS",
+                        "게시글이 삭제되었습니다.",
+                        null
+                ));
     }
 }
