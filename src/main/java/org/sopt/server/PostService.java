@@ -2,7 +2,7 @@ package org.sopt.server;
 
 import org.sopt.domain.Post;
 import org.sopt.exception.CustomException;
-import org.sopt.exception.ErrorCode;
+import org.sopt.common.code.ErrorCode;
 import org.sopt.request.CreatePostRequest;
 import org.sopt.request.UpdatePostRequest;
 import org.springframework.stereotype.Service;

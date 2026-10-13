@@ -1,5 +1,6 @@
 package org.sopt.exception;
 
+import org.sopt.common.code.ErrorCode;
 import org.sopt.response.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -10,11 +11,10 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(CustomException.class)
     public ResponseEntity<Response<Void>> handleCustomException(CustomException e) {
-        return ResponseEntity.status(e.getErrorCode().getHttpStatus())
-                .body(new Response<>(
-                        e.getErrorCode().name(),
-                        e.getMessage(),
-                        null
-                ));
+        ErrorCode code = e.getErrorCode();
+
+        return ResponseEntity
+                .status(code.getHttpStatus())
+                .body(Response.of(code, null));
     }
 }

@@ -1,11 +1,11 @@
 package org.sopt.server;
 
+import org.sopt.common.code.SuccessCode;
 import org.sopt.domain.Post;
 import org.sopt.request.CreatePostRequest;
 import org.sopt.request.UpdatePostRequest;
 import org.sopt.response.PostResponse;
 import org.sopt.response.Response;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,12 +35,11 @@ public class PostController {
     ) {
         service.createPost(request);
 
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(new Response<>(
-                        "SUCCESS",
-                        "게시글이 작성되었습니다.",
-                        null
-                ));
+        SuccessCode code = SuccessCode.POST_CREATED;
+
+        return ResponseEntity
+                .status(code.getHttpStatus())
+                .body(Response.of(code, null));
     }
 
     /**
@@ -54,14 +53,13 @@ public class PostController {
                 .map(PostResponse::from)
                 .toList();
 
-        String message = posts.isEmpty() ? "게시글이 없습니다." : null;
+        SuccessCode code = posts.isEmpty()
+                ? SuccessCode.NO_POSTS
+                : SuccessCode.POSTS_READ;
 
-        return ResponseEntity.status(HttpStatus.OK)
-            .body(new Response<>(
-                    "SUCCESS",
-                    message,
-                    posts
-            ));
+        return ResponseEntity
+                .status(code.getHttpStatus())
+                .body(Response.of(code, posts));
     }
 
     /**
@@ -75,11 +73,12 @@ public class PostController {
             @PathVariable long id
     ) {
         Post post = service.readPost(id);
+        SuccessCode code = SuccessCode.POST_READ;
 
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(new Response<>(
-                        "SUCCESS",
-                        null,
+        return ResponseEntity
+                .status(code.getHttpStatus())
+                .body(Response.of(
+                        code,
                         PostResponse.from(post)
                 ));
     }
@@ -97,14 +96,13 @@ public class PostController {
             @RequestBody(required = true) UpdatePostRequest request
     ) {
         boolean isUpdated = service.updatePost(id, request);
-        String message = isUpdated ? "게시글이 수정되었습니다." : "수정된 내용이 없습니다.";
+        SuccessCode code = isUpdated
+                ? SuccessCode.POST_UPDATED
+                : SuccessCode.POST_UNCHANGED;
 
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(new Response<>(
-                        "SUCCESS",
-                        message,
-                        null
-                ));
+        return ResponseEntity
+                .status(code.getHttpStatus())
+                .body(Response.of(code, null));
     }
 
     /**
@@ -118,12 +116,10 @@ public class PostController {
             @PathVariable long id
     ) {
         service.deletePost(id);
+        SuccessCode code = SuccessCode.POST_DELETED;
 
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(new Response<>(
-                        "SUCCESS",
-                        "게시글이 삭제되었습니다.",
-                        null
-                ));
+        return ResponseEntity
+                .status(code.getHttpStatus())
+                .body(Response.of(code, null));
     }
 }

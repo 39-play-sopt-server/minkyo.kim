@@ -1,7 +1,7 @@
 package org.sopt.domain;
 
 import org.sopt.exception.CustomException;
-import org.sopt.exception.ErrorCode;
+import org.sopt.common.code.ErrorCode;
 
 /**
  * 게시글이 속할 수 있는 카테고리와 사용자에게 표시할 이름을 정의합니다.
