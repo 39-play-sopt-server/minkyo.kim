@@ -5,12 +5,11 @@ import org.sopt.domain.Post;
 import org.sopt.request.CreatePostRequest;
 import org.sopt.common.Pagination;
 import org.sopt.request.UpdatePostRequest;
+import org.sopt.response.PageResponse;
 import org.sopt.response.PostResponse;
 import org.sopt.response.ApiResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 /**
  * 클라이언트 요청을 Service에 전달하고 처리 결과를 공통 응답으로 변환합니다.
@@ -51,24 +50,23 @@ public class PostController {
      * @return 게시글 목록 조회 결과
      */
     @GetMapping
-    public ResponseEntity<ApiResponse<List<PostResponse>>> readPosts(
+    public ResponseEntity<ApiResponse<PageResponse>> readPosts(
             @RequestParam(required = false) String category,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
         Pagination pagination = new Pagination(page, size);
-        List<PostResponse> posts = service.readPosts(category, pagination)
-                .stream()
-                .map(PostResponse::from)
-                .toList();
+        PageResult pageResult = service.readPosts(category, pagination);
 
-        SuccessCode code = posts.isEmpty()
+        PageResponse pageResponse = PageResponse.from(pageResult);
+
+        SuccessCode code = pageResult.totalPages() == 0
                 ? SuccessCode.NO_POSTS
                 : SuccessCode.POSTS_READ;
 
         return ResponseEntity
                 .status(code.getHttpStatus())
-                .body(ApiResponse.of(code, posts));
+                .body(ApiResponse.of(code, pageResponse));
     }
 
     /**

@@ -46,12 +46,30 @@ public class PostRepository {
      *
      * @return 외부에서 구조를 변경할 수 없는 게시글 목록
      */
-    public List<Post> findAll(Pagination pagination) {
-        return posts.values().stream()
+    public PageResult findAll(Pagination pagination) {
+        List<Post> sortedPosts = posts.values().stream()
                 .sorted(Comparator.comparingLong(Post::getId).reversed())
-                .skip(pagination.offset())
-                .limit(pagination.size())
                 .toList();
+
+        return createPageResult(sortedPosts, pagination);
+    }
+
+    /**
+     * 지정한 카테고리에 속한 게시글을 반환합니다.
+     *
+     * @param category 조회할 게시글 카테고리
+     * @return 해당 카테고리에 속한 게시글 목록
+     */
+    public PageResult findAllByCategory(
+            Category category,
+            Pagination pagination
+    ) {
+        List<Post> filteredPosts = posts.values().stream()
+                .filter(post -> post.getCategory() == category)
+                .sorted(Comparator.comparingLong(Post::getId).reversed())
+                .toList();
+
+        return createPageResult(filteredPosts, pagination);
     }
 
     /**
@@ -82,21 +100,17 @@ public class PostRepository {
         return posts.containsKey(id);
     }
 
-    /**
-     * 지정한 카테고리에 속한 게시글을 반환합니다.
-     *
-     * @param category 조회할 게시글 카테고리
-     * @return 해당 카테고리에 속한 게시글 목록
-     */
-    public List<Post> findAllByCategory(
-            Category category,
+    private PageResult createPageResult(
+            List<Post> postsToPaginate,
             Pagination pagination
     ) {
-        return posts.values().stream()
-                .filter(post -> post.getCategory() == category)
-                .sorted(Comparator.comparingLong(Post::getId).reversed())
+        List<Post> pagedPosts = postsToPaginate.stream()
                 .skip(pagination.offset())
                 .limit(pagination.size())
                 .toList();
+        int totalPages = (postsToPaginate.size() + pagination.size() - 1) / pagination.size();
+        boolean hasNext = pagination.page() + 1 < totalPages;
+
+        return new PageResult(pagedPosts, totalPages, hasNext);
     }
 }

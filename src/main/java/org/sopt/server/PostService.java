@@ -9,7 +9,6 @@ import org.sopt.common.Pagination;
 import org.sopt.request.UpdatePostRequest;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -60,7 +59,7 @@ public class PostService {
      * @param category 조회할 카테고리, 없으면 전체 조회
      * @return 조회된 게시글 목록
      */
-    public List<Post> readPosts(
+    public PageResult readPosts(
             String category,
             Pagination pagination
     ) {
@@ -123,7 +122,7 @@ public class PostService {
         return repository.find(id);
     }
 
-    private List<Post> readPostsByCategory(
+    private PageResult readPostsByCategory(
             String categoryName,
             Pagination pagination
     ) {
