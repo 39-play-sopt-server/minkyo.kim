@@ -3,6 +3,7 @@ package org.sopt.server;
 import org.sopt.common.code.SuccessCode;
 import org.sopt.domain.Post;
 import org.sopt.request.CreatePostRequest;
+import org.sopt.common.Pagination;
 import org.sopt.request.UpdatePostRequest;
 import org.sopt.response.PostResponse;
 import org.sopt.response.ApiResponse;
@@ -51,9 +52,13 @@ public class PostController {
      */
     @GetMapping
     public ResponseEntity<ApiResponse<List<PostResponse>>> readPosts(
-            @RequestParam(required = false) String category
+            @RequestParam(required = false) String category,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
     ) {
-        List<PostResponse> posts = service.readPosts(category).stream()
+        Pagination pagination = new Pagination(page, size);
+        List<PostResponse> posts = service.readPosts(category, pagination)
+                .stream()
                 .map(PostResponse::from)
                 .toList();
 

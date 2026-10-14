@@ -2,8 +2,10 @@ package org.sopt.server;
 
 import org.sopt.domain.Category;
 import org.sopt.domain.Post;
+import org.sopt.common.Pagination;
 import org.springframework.stereotype.Repository;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,8 +46,12 @@ public class PostRepository {
      *
      * @return 외부에서 구조를 변경할 수 없는 게시글 목록
      */
-    public List<Post> findAll() {
-        return List.copyOf(posts.values());
+    public List<Post> findAll(Pagination pagination) {
+        return posts.values().stream()
+                .sorted(Comparator.comparingLong(Post::getId).reversed())
+                .skip(pagination.offset())
+                .limit(pagination.size())
+                .toList();
     }
 
     /**
@@ -82,9 +88,15 @@ public class PostRepository {
      * @param category 조회할 게시글 카테고리
      * @return 해당 카테고리에 속한 게시글 목록
      */
-    public List<Post> findAllByCategory(Category category) {
+    public List<Post> findAllByCategory(
+            Category category,
+            Pagination pagination
+    ) {
         return posts.values().stream()
                 .filter(post -> post.getCategory() == category)
+                .sorted(Comparator.comparingLong(Post::getId).reversed())
+                .skip(pagination.offset())
+                .limit(pagination.size())
                 .toList();
     }
 }

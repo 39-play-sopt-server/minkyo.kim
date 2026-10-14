@@ -5,6 +5,7 @@ import org.sopt.domain.Post;
 import org.sopt.common.exception.CustomException;
 import org.sopt.common.code.ErrorCode;
 import org.sopt.request.CreatePostRequest;
+import org.sopt.common.Pagination;
 import org.sopt.request.UpdatePostRequest;
 import org.springframework.stereotype.Service;
 
@@ -59,12 +60,15 @@ public class PostService {
      * @param category 조회할 카테고리, 없으면 전체 조회
      * @return 조회된 게시글 목록
      */
-    public List<Post> readPosts(String category) {
+    public List<Post> readPosts(
+            String category,
+            Pagination pagination
+    ) {
         if (category != null) {
-            return readPostsByCategory(category);
+            return readPostsByCategory(category, pagination);
         }
 
-        return repository.findAll();
+        return repository.findAll(pagination);
     }
 
     /**
@@ -119,9 +123,12 @@ public class PostService {
         return repository.find(id);
     }
 
-    private List<Post> readPostsByCategory(String categoryName) {
+    private List<Post> readPostsByCategory(
+            String categoryName,
+            Pagination pagination
+    ) {
         Category category = Category.fromString(categoryName);
 
-        return repository.findAllByCategory(category);
+        return repository.findAllByCategory(category, pagination);
     }
 }

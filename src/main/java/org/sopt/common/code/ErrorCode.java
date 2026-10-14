@@ -11,7 +11,9 @@ public enum ErrorCode implements ResponseCode {
     TITLE_REQUIRED(HttpStatus.BAD_REQUEST, "제목은 필수 입력 항목입니다."),
     CONTENT_REQUIRED(HttpStatus.BAD_REQUEST, "내용은 필수 입력 항목입니다."),
     CATEGORY_REQUIRED(HttpStatus.BAD_REQUEST, "카테고리는 필수 입력 항목입니다."),
-    WRITER_REQUIRED(HttpStatus.BAD_REQUEST, "작성자는 필수 입력 항목입니다.");
+    WRITER_REQUIRED(HttpStatus.BAD_REQUEST, "작성자는 필수 입력 항목입니다."),
+    INVALID_PAGE(HttpStatus.BAD_REQUEST, "page 값은 0 이상이어야 합니다."),
+    INVALID_PAGE_SIZE(HttpStatus.BAD_REQUEST, "size 값은 1 이상, 50 이하여야 합니다.");
 
     private final HttpStatus httpStatus;
     private final String message;
