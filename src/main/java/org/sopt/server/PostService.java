@@ -57,7 +57,11 @@ public class PostService {
      *
      * @return 전체 게시글 목록
      */
-    public List<Post> readPosts() {
+    public List<Post> readPosts(String category) {
+        if (category != null) {
+            return readPostsByCategory(category);
+        }
+
         return repository.findAll();
     }
 
@@ -111,5 +115,11 @@ public class PostService {
         }
 
         return repository.find(id);
+    }
+
+    private List<Post> readPostsByCategory(String categoryName) {
+        Category category = Category.fromString(categoryName);
+
+        return repository.findAllByCategory(category);
     }
 }

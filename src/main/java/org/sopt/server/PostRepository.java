@@ -1,5 +1,6 @@
 package org.sopt.server;
 
+import org.sopt.domain.Category;
 import org.sopt.domain.Post;
 import org.springframework.stereotype.Repository;
 
@@ -73,5 +74,11 @@ public class PostRepository {
      */
     public boolean existsById(long id) {
         return posts.containsKey(id);
+    }
+
+    public List<Post> findAllByCategory(Category category) {
+        return posts.values().stream()
+                .filter(post -> post.getCategory() == category)
+                .toList();
     }
 }

@@ -48,8 +48,10 @@ public class PostController {
      * @return 게시글 목록 조회 결과
      */
     @GetMapping
-    public ResponseEntity<ApiResponse<List<PostResponse>>> readPosts() {
-        List<PostResponse> posts = service.readPosts().stream()
+    public ResponseEntity<ApiResponse<List<PostResponse>>> readPosts(
+            @RequestParam(required = false) String category
+    ) {
+        List<PostResponse> posts = service.readPosts(category).stream()
                 .map(PostResponse::from)
                 .toList();
 
