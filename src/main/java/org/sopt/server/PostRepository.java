@@ -42,9 +42,10 @@ public class PostRepository {
     }
 
     /**
-     * 저장된 전체 게시글을 반환합니다.
+     * 저장된 게시글을 최신순으로 정렬하여 지정한 페이지에 포함된 게시글 목록을 반환합니다.
      *
-     * @return 외부에서 구조를 변경할 수 없는 게시글 목록
+     * @param pagination 페이지 조회 조건
+     * @return 현재 페이지의 게시글과 페이지 상태
      */
     public PageResult findAll(Pagination pagination) {
         List<Post> sortedPosts = posts.values().stream()
@@ -55,10 +56,11 @@ public class PostRepository {
     }
 
     /**
-     * 지정한 카테고리에 속한 게시글을 반환합니다.
+     * 지정한 카테고리의 게시글을 최신순으로 정렬하여 지정한 페이지에 포함된 게시글 목록을 반환합니다.
      *
      * @param category 조회할 게시글 카테고리
-     * @return 해당 카테고리에 속한 게시글 목록
+     * @param pagination 페이지 조회 조건
+     * @return 현재 페이지의 게시글과 페이지 상태
      */
     public PageResult findAllByCategory(
             Category category,

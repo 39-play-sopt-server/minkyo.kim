@@ -53,11 +53,12 @@ public class PostService {
     }
 
     /**
-     * 전체 게시글 목록을 조회하며,
+     * 게시글 목록을 페이지 단위로 조회하며,
      * 카테고리가 전달되면 해당 카테고리를 가진 게시글만 반환합니다.
      *
      * @param category 조회할 카테고리, 없으면 전체 조회
-     * @return 조회된 게시글 목록
+     * @param pagination 페이지 조회 조건
+     * @return 현재 페이지의 게시글과 페이지 상태
      */
     public PageResult readPosts(
             String category,
