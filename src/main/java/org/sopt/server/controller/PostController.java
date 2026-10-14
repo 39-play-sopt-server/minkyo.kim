@@ -1,4 +1,4 @@
-package org.sopt.server;
+package org.sopt.server.controller;
 
 import org.sopt.common.code.SuccessCode;
 import org.sopt.domain.Post;
@@ -8,6 +8,8 @@ import org.sopt.request.UpdatePostRequest;
 import org.sopt.response.PageResponse;
 import org.sopt.response.PostResponse;
 import org.sopt.response.ApiResponse;
+import org.sopt.server.PageResult;
+import org.sopt.server.PostService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 @RequestMapping(path = "/api/v1/posts")
-public class PostController {
+public class PostController implements PostApiDocs {
     private final PostService service;
 
     public PostController(PostService service) {
@@ -29,6 +31,7 @@ public class PostController {
      * @param request 게시글 생성 요청
      * @return 게시글 생성 처리 결과
      */
+    @Override
     @PostMapping
     public ResponseEntity<ApiResponse<Void>> createPost(
             @RequestBody(required = true) CreatePostRequest request
@@ -51,6 +54,7 @@ public class PostController {
      * @param size 한 페이지에서 조회할 게시글 수
      * @return 게시글 목록 조회 결과
      */
+    @Override
     @GetMapping
     public ResponseEntity<ApiResponse<PageResponse>> readPosts(
             @RequestParam(required = false) String category,
@@ -77,6 +81,7 @@ public class PostController {
      * @param id 조회할 게시글 ID
      * @return 게시글 단건 조회 결과
      */
+    @Override
     @GetMapping(path = "/{id}")
     public ResponseEntity<ApiResponse<PostResponse>> readPost(
             @PathVariable long id
@@ -99,6 +104,7 @@ public class PostController {
      * @param request 게시글 수정 요청
      * @return 게시글 수정 처리 결과
      */
+    @Override
     @PatchMapping(path = "/{id}")
     public ResponseEntity<ApiResponse<Void>> updatePost(
             @PathVariable long id,
@@ -120,6 +126,7 @@ public class PostController {
      * @param id 삭제할 게시글 ID
      * @return 게시글 삭제 처리 결과
      */
+    @Override
     @DeleteMapping(path = "/{id}")
     public ResponseEntity<ApiResponse<Void>> deletePost(
             @PathVariable long id

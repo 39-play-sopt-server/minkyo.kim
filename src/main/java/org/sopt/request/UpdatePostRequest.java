@@ -1,5 +1,7 @@
 package org.sopt.request;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import java.util.Optional;
 
 /**
@@ -20,6 +22,7 @@ public record UpdatePostRequest(
      *
      * @return 모든 수정 항목이 비어 있으면 true, 아니면 false
      */
+    @Schema(hidden = true)
     public boolean isEmpty() {
         return title.isEmpty() && content().isEmpty() && category.isEmpty();
     }
