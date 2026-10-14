@@ -2,6 +2,9 @@ package org.sopt.common.code;
 
 import org.springframework.http.HttpStatus;
 
+/**
+ * API 요청이 정상적으로 처리된 상황과 사용자 메시지를 정의합니다.
+ */
 public enum SuccessCode implements ResponseCode {
     POST_CREATED(HttpStatus.CREATED, "게시글이 작성되었습니다."),
     POST_READ(HttpStatus.OK, null),

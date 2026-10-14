@@ -76,6 +76,12 @@ public class PostRepository {
         return posts.containsKey(id);
     }
 
+    /**
+     * 지정한 카테고리에 속한 게시글을 반환합니다.
+     *
+     * @param category 조회할 게시글 카테고리
+     * @return 해당 카테고리에 속한 게시글 목록
+     */
     public List<Post> findAllByCategory(Category category) {
         return posts.values().stream()
                 .filter(post -> post.getCategory() == category)

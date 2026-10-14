@@ -53,9 +53,11 @@ public class PostService {
     }
 
     /**
-     * 저장된 전체 게시글을 조회합니다.
+     * 전체 게시글 목록을 조회하며,
+     * 카테고리가 전달되면 해당 카테고리를 가진 게시글만 반환합니다.
      *
-     * @return 전체 게시글 목록
+     * @param category 조회할 카테고리, 없으면 전체 조회
+     * @return 조회된 게시글 목록
      */
     public List<Post> readPosts(String category) {
         if (category != null) {
