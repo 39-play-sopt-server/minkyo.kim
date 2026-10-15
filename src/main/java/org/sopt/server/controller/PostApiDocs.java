@@ -11,6 +11,9 @@ import org.sopt.response.PageResponse;
 import org.sopt.response.PostResponse;
 import org.springframework.http.ResponseEntity;
 
+/**
+ * 게시글 API의 요청 조건과 응답 상황을 문서화합니다.
+ */
 @Tag(name = "게시글 API")
 public interface PostApiDocs {
     @Operation(summary = "게시글 작성")

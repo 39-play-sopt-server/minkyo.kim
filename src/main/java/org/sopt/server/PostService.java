@@ -40,7 +40,7 @@ public class PostService {
     }
 
     /**
-     * 지정한 ID의 게시글을 조회합니다.
+     * 지정한 ID의 게시글 조회수를 증가시키고 게시글을 반환합니다.
      *
      * @param id 조회할 게시글 ID
      * @return 조회된 게시글

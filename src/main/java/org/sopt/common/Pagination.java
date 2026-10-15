@@ -4,7 +4,7 @@ import org.sopt.common.code.ErrorCode;
 import org.sopt.common.exception.CustomException;
 
 /**
- * pagination에 사용할 페이지 번호와 크기를 나타냅니다.
+ * 페이지 단위 조회에 사용할 페이지 번호와 크기를 나타냅니다.
  *
  * @param page 0부터 시작하는 페이지 번호
  * @param size 한 페이지에서 조회할 게시글 수

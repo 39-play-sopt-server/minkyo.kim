@@ -37,7 +37,7 @@ public class PostRepository {
      * 지정한 ID의 게시글을 반환합니다.
      *
      * @param id 조회할 게시글 ID
-     * @return 조회된 게시글 또는 존재하지 않으면 null
+     * @return 조회된 게시글 또는 존재하지 않으면 비어 있는 Optional
      */
     public Optional<Post> find(long id) {
         return Optional.ofNullable(posts.get(id));
@@ -77,9 +77,10 @@ public class PostRepository {
     }
 
     /**
-     * 기존 게시글을 변경된 게시글로 교체합니다.
+     * 지정한 게시글의 최신 상태를 기준으로 변경을 원자적으로 적용합니다.
      *
-     * @param updatedPost 변경 사항이 반영된 게시글
+     * @param id 변경할 게시글 ID
+     * @param updater 현재 게시글을 변경된 게시글로 변환하는 함수
      */
     public void update(
             long id,
@@ -95,9 +96,10 @@ public class PostRepository {
     }
 
     /**
-     * 지정한 ID의 게시글을 삭제합니다.
+     * 지정한 ID의 게시글을 삭제하고 삭제 결과를 반환합니다.
      *
      * @param id 삭제할 게시글 ID
+     * @return 삭제된 게시글 또는 존재하지 않으면 비어 있는 Optional
      */
     public Optional<Post> delete(long id) {
         return Optional.ofNullable(posts.remove(id));

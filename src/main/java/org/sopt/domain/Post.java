@@ -91,6 +91,9 @@ public class Post {
         return this.writer;
     }
 
+    /**
+     * 동시 요청에서 증가값이 유실되지 않도록 조회수를 원자적으로 증가시킵니다.
+     */
     public void increaseViewCount() {
         this.viewCount.incrementAndGet();
     }
