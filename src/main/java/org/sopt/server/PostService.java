@@ -79,8 +79,6 @@ public class PostService {
      * @return 수정할 내용이 있으면 true, 없으면 false
      */
     public boolean updatePost(long id, UpdatePostRequest request) {
-        Post originalPost = getPost(id);
-
         if (request.isEmpty()) {
             return false;
         }
@@ -89,12 +87,13 @@ public class PostService {
                 .category()
                 .map(Category::fromString);
 
-        Post updatedPost = originalPost.with(
-                request.title(),
-                request.content(),
-                category
+        repository.update(id,
+                post -> post.with(
+                        request.title(),
+                        request.content(),
+                        category
+                )
         );
-        repository.update(updatedPost);
 
         return true;
     }
@@ -105,8 +104,10 @@ public class PostService {
      * @param id 삭제할 게시글 ID
      */
     public void deletePost(long id) {
-        getPost(id);
-        repository.delete(id);
+        repository.delete(id)
+                .orElseThrow(
+                        () -> new CustomException(ErrorCode.POST_NOT_FOUND)
+                );
     }
 
     /**
@@ -116,11 +117,10 @@ public class PostService {
      * @return 조회된 게시글
      */
     private Post getPost(long id) {
-        if (!repository.existsById(id)) {
-            throw new CustomException(ErrorCode.POST_NOT_FOUND);
-        }
-
-        return repository.find(id);
+        return repository.find(id)
+                .orElseThrow(
+                        () -> new CustomException(ErrorCode.POST_NOT_FOUND)
+                );
     }
 
     private PageResult readPostsByCategory(

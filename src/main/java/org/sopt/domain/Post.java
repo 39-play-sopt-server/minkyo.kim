@@ -5,6 +5,7 @@ import org.sopt.common.exception.CustomException;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * 게시글의 상태를 나타내는 도메인 객체입니다.
@@ -16,7 +17,7 @@ public class Post {
     private final String content;
     private final Category category;
     private final String writer;
-    private long viewCount;
+    private final AtomicLong viewCount;
     private final LocalDateTime createdAt;
     private final LocalDateTime updatedAt;
 
@@ -43,7 +44,7 @@ public class Post {
         this.content = content;
         this.category = category;
         this.writer = writer;
-        this.viewCount = 0;
+        this.viewCount = new AtomicLong(0);
         this.createdAt = now;
         this.updatedAt = now;
     }
@@ -54,7 +55,7 @@ public class Post {
             String content,
             Category category,
             String writer,
-            long viewCount,
+            AtomicLong viewCount,
             LocalDateTime createdAt,
             LocalDateTime updatedAt
     ) {
@@ -90,8 +91,12 @@ public class Post {
         return this.writer;
     }
 
+    public void increaseViewCount() {
+        this.viewCount.incrementAndGet();
+    }
+
     public long getViewCount() {
-        return this.viewCount;
+        return this.viewCount.get();
     }
 
     public LocalDateTime getCreatedAt() {
@@ -138,13 +143,6 @@ public class Post {
                 this.createdAt,
                 LocalDateTime.now()
         );
-    }
-
-    /**
-     * 게시글의 조회수를 1 증가시킵니다.
-     */
-    public void increaseViewCount() {
-        this.viewCount++;
     }
 
     private static void validate(

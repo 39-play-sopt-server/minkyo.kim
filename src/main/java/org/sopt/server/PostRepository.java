@@ -1,23 +1,25 @@
 package org.sopt.server;
 
+import org.sopt.common.code.ErrorCode;
+import org.sopt.common.exception.CustomException;
 import org.sopt.domain.Category;
 import org.sopt.domain.Post;
 import org.sopt.common.Pagination;
 import org.springframework.stereotype.Repository;
 
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.UnaryOperator;
 
 /**
  * 게시글을 메모리에 저장하고 관리합니다.
  */
 @Repository
 public class PostRepository {
-    private final Map<Long, Post> posts = new HashMap<>();
+    private final Map<Long, Post> posts = new ConcurrentHashMap<>();
 
-    private long nextId = 0L;
+    private final AtomicLong nextId = new AtomicLong(0);
 
     /**
      * 새 게시글에 ID를 할당하고 저장합니다.
@@ -25,7 +27,7 @@ public class PostRepository {
      * @param post 저장할 게시글
      */
     public void save(Post post) {
-        long id = nextId++;
+        long id = nextId.getAndIncrement();
         post.assignId(id);
 
         posts.put(id, post);
@@ -37,8 +39,8 @@ public class PostRepository {
      * @param id 조회할 게시글 ID
      * @return 조회된 게시글 또는 존재하지 않으면 null
      */
-    public Post find(long id) {
-        return posts.get(id);
+    public Optional<Post> find(long id) {
+        return Optional.ofNullable(posts.get(id));
     }
 
     /**
@@ -79,8 +81,17 @@ public class PostRepository {
      *
      * @param updatedPost 변경 사항이 반영된 게시글
      */
-    public void update(Post updatedPost) {
-        posts.put(updatedPost.getId(), updatedPost);
+    public void update(
+            long id,
+            UnaryOperator<Post> updater
+    ) {
+        posts.compute(id, (key, currentPost) -> {
+            if (currentPost == null) {
+                throw new CustomException(ErrorCode.POST_NOT_FOUND);
+            }
+
+            return updater.apply(currentPost);
+        });
     }
 
     /**
@@ -88,18 +99,8 @@ public class PostRepository {
      *
      * @param id 삭제할 게시글 ID
      */
-    public void delete(long id) {
-        posts.remove(id);
-    }
-
-    /**
-     * 지정한 ID의 게시글이 존재하는지 확인합니다.
-     *
-     * @param id 확인할 게시글 ID
-     * @return 게시글이 존재하면 true, 아니면 false
-     */
-    public boolean existsById(long id) {
-        return posts.containsKey(id);
+    public Optional<Post> delete(long id) {
+        return Optional.ofNullable(posts.remove(id));
     }
 
     private PageResult createPageResult(
