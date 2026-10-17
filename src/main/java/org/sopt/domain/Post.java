@@ -1,7 +1,11 @@
 package org.sopt.domain;
 
+import org.sopt.common.code.ErrorCode;
+import org.sopt.common.exception.CustomException;
+
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * 게시글의 상태를 나타내는 도메인 객체입니다.
@@ -13,6 +17,7 @@ public class Post {
     private final String content;
     private final Category category;
     private final String writer;
+    private final AtomicLong viewCount;
     private final LocalDateTime createdAt;
     private final LocalDateTime updatedAt;
 
@@ -30,6 +35,8 @@ public class Post {
             Category category,
             String writer
     ) {
+        validate(title, content, category, writer);
+
         LocalDateTime now = LocalDateTime.now();
 
         this.id = null;
@@ -37,6 +44,7 @@ public class Post {
         this.content = content;
         this.category = category;
         this.writer = writer;
+        this.viewCount = new AtomicLong(0);
         this.createdAt = now;
         this.updatedAt = now;
     }
@@ -47,14 +55,18 @@ public class Post {
             String content,
             Category category,
             String writer,
+            AtomicLong viewCount,
             LocalDateTime createdAt,
             LocalDateTime updatedAt
     ) {
+        validate(title, content, category, writer);
+
         this.id = id;
         this.title = title;
         this.content = content;
         this.category = category;
         this.writer = writer;
+        this.viewCount = viewCount;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
@@ -79,6 +91,17 @@ public class Post {
         return this.writer;
     }
 
+    /**
+     * 동시 요청에서 증가값이 유실되지 않도록 조회수를 원자적으로 증가시킵니다.
+     */
+    public void increaseViewCount() {
+        this.viewCount.incrementAndGet();
+    }
+
+    public long getViewCount() {
+        return this.viewCount.get();
+    }
+
     public LocalDateTime getCreatedAt() {
         return this.createdAt;
     }
@@ -101,7 +124,7 @@ public class Post {
 
     /**
      * 전달된 변경 사항을 반영한 새로운 게시글을 반환합니다.
-     * 값이 없는 항목은 기존 값을 유지하며 작성자와 생성일은 변경하지 않습니다.
+     * 값이 없는 항목은 기존 값을 유지하며 작성자･생성일･조회수는 변경하지 않습니다.
      *
      * @param newTitle 변경할 제목
      * @param newContent 변경할 내용
@@ -119,8 +142,29 @@ public class Post {
                 newContent.orElse(this.content),
                 newCategory.orElse(this.category),
                 this.writer,
+                this.viewCount,
                 this.createdAt,
                 LocalDateTime.now()
         );
+    }
+
+    private static void validate(
+            String title,
+            String content,
+            Category category,
+            String writer
+    ) {
+        if (title == null || title.isBlank()) {
+            throw new CustomException(ErrorCode.TITLE_REQUIRED);
+        }
+        if (content == null || content.isBlank()) {
+            throw new CustomException(ErrorCode.CONTENT_REQUIRED);
+        }
+        if (category == null) {
+            throw new CustomException(ErrorCode.CATEGORY_REQUIRED);
+        }
+        if (writer == null || writer.isBlank()) {
+            throw new CustomException(ErrorCode.WRITER_REQUIRED);
+        }
     }
 }
