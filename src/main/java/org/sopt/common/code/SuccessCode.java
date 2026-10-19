@@ -10,7 +10,6 @@ public enum SuccessCode implements ResponseCode {
     POST_READ(HttpStatus.OK, null),
     POSTS_READ(HttpStatus.OK, null),
     POST_UPDATED(HttpStatus.OK, "게시글이 수정되었습니다."),
-    POST_UNCHANGED(HttpStatus.OK, "수정된 내용이 없습니다."),
     NO_POSTS(HttpStatus.OK, "게시글이 없습니다."),
     POST_DELETED(HttpStatus.OK, "게시글이 삭제되었습니다.");
 

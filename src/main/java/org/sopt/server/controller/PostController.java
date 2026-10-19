@@ -110,10 +110,8 @@ public class PostController implements PostApiDocs {
             @PathVariable long id,
             @RequestBody(required = true) UpdatePostRequest request
     ) {
-        boolean isUpdated = service.updatePost(id, request);
-        SuccessCode code = isUpdated
-                ? SuccessCode.POST_UPDATED
-                : SuccessCode.POST_UNCHANGED;
+        service.updatePost(id, request);
+        SuccessCode code = SuccessCode.POST_UPDATED;
 
         return ResponseEntity
                 .status(code.getHttpStatus())
