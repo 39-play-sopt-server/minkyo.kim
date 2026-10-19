@@ -1,5 +1,6 @@
 package org.sopt.server;
 
+import jakarta.persistence.EntityManager;
 import org.sopt.domain.Category;
 import org.sopt.domain.Post;
 import org.sopt.common.exception.CustomException;
@@ -7,7 +8,12 @@ import org.sopt.common.code.ErrorCode;
 import org.sopt.request.CreatePostRequest;
 import org.sopt.common.Pagination;
 import org.sopt.request.UpdatePostRequest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -17,9 +23,14 @@ import java.util.Optional;
 @Service
 public class PostService {
     private final PostRepository repository;
+    private final EntityManager entityManager;
 
-    public PostService(PostRepository repository) {
+    public PostService(
+            PostRepository repository,
+            EntityManager entityManager
+    ) {
         this.repository = repository;
+        this.entityManager = entityManager;
     }
 
     /**
@@ -45,9 +56,15 @@ public class PostService {
      * @param id 조회할 게시글 ID
      * @return 조회된 게시글
      */
+    @Transactional
     public Post readPost(long id) {
-        Post post = getPost(id);
-        post.increaseViewCount();
+        Post post = repository.findById(id)
+                .orElseThrow(
+                        () -> new CustomException(ErrorCode.POST_NOT_FOUND)
+                );
+
+        repository.increaseViewCount(id);
+        entityManager.refresh(post);
 
         return post;
     }
@@ -56,19 +73,32 @@ public class PostService {
      * 게시글 목록을 페이지 단위로 조회하며,
      * 카테고리가 전달되면 해당 카테고리를 가진 게시글만 반환합니다.
      *
-     * @param category 조회할 카테고리, 없으면 전체 조회
+     * @param categoryValue 조회할 카테고리, 없으면 전체 조회
      * @param pagination 페이지 조회 조건
      * @return 현재 페이지의 게시글과 페이지 상태
      */
     public PageResult readPosts(
-            String category,
+            String categoryValue,
             Pagination pagination
     ) {
-        if (category != null) {
-            return readPostsByCategory(category, pagination);
-        }
+        Pageable pageRequest = PageRequest.of(
+                pagination.page(),
+                pagination.size(),
+                Sort.by(Sort.Direction.DESC, "id")
+        );
 
-        return repository.findAll(pagination);
+        Page<Post> result = categoryValue != null ?
+                repository.findAllByCategory(
+                        Category.fromString(categoryValue),
+                        pageRequest
+                )
+                : repository.findAll(pageRequest);
+
+        return new PageResult(
+                result.getContent(),
+                result.getTotalPages(),
+                result.hasNext()
+        );
     }
 
     /**
@@ -76,26 +106,23 @@ public class PostService {
      *
      * @param id 수정할 게시글 ID
      * @param request 게시글 수정 요청
-     * @return 수정할 내용이 있으면 true, 없으면 false
      */
-    public boolean updatePost(long id, UpdatePostRequest request) {
-        if (request.isEmpty()) {
-            return false;
-        }
+    @Transactional
+    public void updatePost(long id, UpdatePostRequest request) {
+        Post post = repository.findById(id)
+                .orElseThrow(
+                        () -> new CustomException(ErrorCode.POST_NOT_FOUND)
+                );
 
         Optional<Category> category = request
                 .category()
                 .map(Category::fromString);
 
-        repository.update(id,
-                post -> post.with(
-                        request.title(),
-                        request.content(),
-                        category
-                )
+        post.update(
+                request.title(),
+                request.content(),
+                category
         );
-
-        return true;
     }
 
     /**
@@ -104,31 +131,6 @@ public class PostService {
      * @param id 삭제할 게시글 ID
      */
     public void deletePost(long id) {
-        repository.delete(id)
-                .orElseThrow(
-                        () -> new CustomException(ErrorCode.POST_NOT_FOUND)
-                );
-    }
-
-    /**
-     * 게시글 존재 여부를 확인한 뒤 게시글을 반환합니다.
-     *
-     * @param id 조회할 게시글 ID
-     * @return 조회된 게시글
-     */
-    private Post getPost(long id) {
-        return repository.find(id)
-                .orElseThrow(
-                        () -> new CustomException(ErrorCode.POST_NOT_FOUND)
-                );
-    }
-
-    private PageResult readPostsByCategory(
-            String categoryName,
-            Pagination pagination
-    ) {
-        Category category = Category.fromString(categoryName);
-
-        return repository.findAllByCategory(category, pagination);
+        repository.deleteById(id);
     }
 }

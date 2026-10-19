@@ -5,7 +5,7 @@ import org.sopt.domain.Post;
 import java.util.List;
 
 /**
- * 게시글 저장소가 반환하는 현재 페이지의 조회 결과와 페이지 상태를 나타냅니다.
+ * 현재 페이지의 조회 결과와 페이지 상태를 나타냅니다.
  *
  * @param posts 현재 페이지에 포함된 게시글 목록
  * @param totalPages 전체 페이지 수

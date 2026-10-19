@@ -81,8 +81,7 @@ public interface PostApiDocs {
 
     @Operation(summary = "게시글 삭제")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "게시글 삭제 성공"),
-            @ApiResponse(responseCode = "404", description = "게시글이 존재하지 않는 경우")
+            @ApiResponse(responseCode = "200", description = "게시글 삭제 성공")
     })
     ResponseEntity<org.sopt.response.ApiResponse<Void>> deletePost(
             @Parameter(description = "삭제할 게시글 ID") long id
