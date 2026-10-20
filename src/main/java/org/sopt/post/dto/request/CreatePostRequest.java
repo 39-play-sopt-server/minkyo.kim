@@ -1,4 +1,4 @@
-package org.sopt.request;
+package org.sopt.post.dto.request;
 
 /**
  * 게시글 생성에 필요한 클라이언트 요청입니다.

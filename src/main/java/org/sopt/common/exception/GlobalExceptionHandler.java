@@ -1,9 +1,8 @@
 package org.sopt.common.exception;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.sopt.common.code.CommonErrorCode;
 import org.sopt.common.code.ErrorCode;
-import org.sopt.response.ApiResponse;
+import org.sopt.common.response.CommonResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -23,7 +22,7 @@ public class GlobalExceptionHandler {
      * @return 오류 상태와 공통 본문을 포함한 HTTP 응답
      */
     @ExceptionHandler(CustomException.class)
-    public ResponseEntity<ApiResponse<Void>> handleCustomException(CustomException e) {
+    public ResponseEntity<CommonResponse<Void>> handleCustomException(CustomException e) {
         ErrorCode code = e.getErrorCode();
 
         return createErrorResponse(code);
@@ -36,8 +35,8 @@ public class GlobalExceptionHandler {
      * @return 400 Bad Request와 공통 본문을 포함한 HTTP 응답
      */
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    public ResponseEntity<ApiResponse<Void>> handleTypeMismatchException(MethodArgumentTypeMismatchException e) {
-        ErrorCode code = ErrorCode.INVALID_PARAMETER;
+    public ResponseEntity<CommonResponse<Void>> handleTypeMismatchException(MethodArgumentTypeMismatchException e) {
+        ErrorCode code = CommonErrorCode.INVALID_PARAMETER;
 
         return createErrorResponse(code);
     }
@@ -49,8 +48,8 @@ public class GlobalExceptionHandler {
      * @return 400 Bad Request와 공통 본문을 포함한 HTTP 응답
      */
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<ApiResponse<Void>> handleHttpMessageException(HttpMessageNotReadableException e) {
-        ErrorCode code = ErrorCode.INVALID_PARAMETER;
+    public ResponseEntity<CommonResponse<Void>> handleHttpMessageException(HttpMessageNotReadableException e) {
+        ErrorCode code = CommonErrorCode.INVALID_PARAMETER;
 
         return createErrorResponse(code);
     }
@@ -62,17 +61,17 @@ public class GlobalExceptionHandler {
      * @return 500 Internal Server Error와 공통 본문을 포함한 HTTP 응답
      */
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiResponse<Void>> handleUnexpectedException(Exception e) {
-        ErrorCode code = ErrorCode.INTERNAL_SERVER_ERROR;
+    public ResponseEntity<CommonResponse<Void>> handleUnexpectedException(Exception e) {
+        ErrorCode code = CommonErrorCode.INTERNAL_SERVER_ERROR;
 
         return createErrorResponse(code);
     }
 
-    private ResponseEntity<ApiResponse<Void>> createErrorResponse(
+    private ResponseEntity<CommonResponse<Void>> createErrorResponse(
             ErrorCode errorCode
     ) {
         return ResponseEntity
                 .status(errorCode.getHttpStatus())
-                .body(ApiResponse.of(errorCode, null));
+                .body(CommonResponse.failure(errorCode, null));
     }
 }

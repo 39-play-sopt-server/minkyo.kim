@@ -1,13 +1,15 @@
-package org.sopt.server;
+package org.sopt.post.service;
 
 import jakarta.persistence.EntityManager;
-import org.sopt.domain.Category;
-import org.sopt.domain.Post;
+import org.sopt.post.domain.Category;
+import org.sopt.post.domain.Post;
 import org.sopt.common.exception.CustomException;
-import org.sopt.common.code.ErrorCode;
-import org.sopt.request.CreatePostRequest;
+import org.sopt.post.exception.PostErrorCode;
+import org.sopt.post.dto.request.CreatePostRequest;
 import org.sopt.common.Pagination;
-import org.sopt.request.UpdatePostRequest;
+import org.sopt.post.dto.request.UpdatePostRequest;
+import org.sopt.post.dto.PostPageResult;
+import org.sopt.post.repository.PostRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -60,7 +62,7 @@ public class PostService {
     public Post readPost(long id) {
         Post post = repository.findById(id)
                 .orElseThrow(
-                        () -> new CustomException(ErrorCode.POST_NOT_FOUND)
+                        () -> new CustomException(PostErrorCode.POST_NOT_FOUND)
                 );
 
         repository.increaseViewCount(id);
@@ -77,7 +79,7 @@ public class PostService {
      * @param pagination 페이지 조회 조건
      * @return 현재 페이지의 게시글과 페이지 상태
      */
-    public PageResult readPosts(
+    public PostPageResult readPosts(
             String categoryValue,
             Pagination pagination
     ) {
@@ -94,7 +96,7 @@ public class PostService {
                 )
                 : repository.findAll(pageRequest);
 
-        return new PageResult(
+        return new PostPageResult(
                 result.getContent(),
                 result.getTotalPages(),
                 result.hasNext()
@@ -111,7 +113,7 @@ public class PostService {
     public void updatePost(long id, UpdatePostRequest request) {
         Post post = repository.findById(id)
                 .orElseThrow(
-                        () -> new CustomException(ErrorCode.POST_NOT_FOUND)
+                        () -> new CustomException(PostErrorCode.POST_NOT_FOUND)
                 );
 
         Optional<Category> category = request

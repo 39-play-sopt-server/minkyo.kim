@@ -1,15 +1,15 @@
-package org.sopt.server.controller;
+package org.sopt.post.controller;
 
-import org.sopt.common.code.SuccessCode;
-import org.sopt.domain.Post;
-import org.sopt.request.CreatePostRequest;
+import org.sopt.post.dto.PostPageResult;
+import org.sopt.post.domain.Post;
+import org.sopt.post.dto.request.CreatePostRequest;
 import org.sopt.common.Pagination;
-import org.sopt.request.UpdatePostRequest;
-import org.sopt.response.PageResponse;
-import org.sopt.response.PostResponse;
-import org.sopt.response.ApiResponse;
-import org.sopt.server.PageResult;
-import org.sopt.server.PostService;
+import org.sopt.post.dto.request.UpdatePostRequest;
+import org.sopt.post.dto.response.PostPageResponse;
+import org.sopt.post.dto.response.PostResponse;
+import org.sopt.common.response.CommonResponse;
+import org.sopt.post.service.PostService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,16 +33,17 @@ public class PostController implements PostApiDocs {
      */
     @Override
     @PostMapping
-    public ResponseEntity<ApiResponse<Void>> createPost(
+    public ResponseEntity<CommonResponse<Void>> createPost(
             @RequestBody(required = true) CreatePostRequest request
     ) {
         service.createPost(request);
 
-        SuccessCode code = SuccessCode.POST_CREATED;
-
         return ResponseEntity
-                .status(code.getHttpStatus())
-                .body(ApiResponse.of(code, null));
+                .status(HttpStatus.CREATED)
+                .body(CommonResponse.success(
+                        "게시글이 작성되었습니다.",
+                        null
+                ));
     }
 
     /**
@@ -56,23 +57,26 @@ public class PostController implements PostApiDocs {
      */
     @Override
     @GetMapping
-    public ResponseEntity<ApiResponse<PageResponse>> readPosts(
+    public ResponseEntity<CommonResponse<PostPageResponse>> readPosts(
             @RequestParam(required = false) String category,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
         Pagination pagination = new Pagination(page, size);
-        PageResult pageResult = service.readPosts(category, pagination);
+        PostPageResult postPageResult = service.readPosts(category, pagination);
 
-        PageResponse pageResponse = PageResponse.from(pageResult);
+        PostPageResponse postPageResponse = PostPageResponse.from(postPageResult);
 
-        SuccessCode code = pageResult.totalPages() == 0
-                ? SuccessCode.NO_POSTS
-                : SuccessCode.POSTS_READ;
+        String message = postPageResult.totalPages() == 0
+                ? "게시글이 없습니다."
+                : null;
 
         return ResponseEntity
-                .status(code.getHttpStatus())
-                .body(ApiResponse.of(code, pageResponse));
+                .status(HttpStatus.OK)
+                .body(CommonResponse.success(
+                        message,
+                        postPageResponse
+                ));
     }
 
     /**
@@ -83,16 +87,15 @@ public class PostController implements PostApiDocs {
      */
     @Override
     @GetMapping(path = "/{id}")
-    public ResponseEntity<ApiResponse<PostResponse>> readPost(
+    public ResponseEntity<CommonResponse<PostResponse>> readPost(
             @PathVariable long id
     ) {
         Post post = service.readPost(id);
-        SuccessCode code = SuccessCode.POST_READ;
 
         return ResponseEntity
-                .status(code.getHttpStatus())
-                .body(ApiResponse.of(
-                        code,
+                .status(HttpStatus.OK)
+                .body(CommonResponse.success(
+                        null,
                         PostResponse.from(post)
                 ));
     }
@@ -106,16 +109,18 @@ public class PostController implements PostApiDocs {
      */
     @Override
     @PatchMapping(path = "/{id}")
-    public ResponseEntity<ApiResponse<Void>> updatePost(
+    public ResponseEntity<CommonResponse<Void>> updatePost(
             @PathVariable long id,
             @RequestBody(required = true) UpdatePostRequest request
     ) {
         service.updatePost(id, request);
-        SuccessCode code = SuccessCode.POST_UPDATED;
 
         return ResponseEntity
-                .status(code.getHttpStatus())
-                .body(ApiResponse.of(code, null));
+                .status(HttpStatus.OK)
+                .body(CommonResponse.success(
+                        "게시글이 수정되었습니다.",
+                        null
+                ));
     }
 
     /**
@@ -126,14 +131,16 @@ public class PostController implements PostApiDocs {
      */
     @Override
     @DeleteMapping(path = "/{id}")
-    public ResponseEntity<ApiResponse<Void>> deletePost(
+    public ResponseEntity<CommonResponse<Void>> deletePost(
             @PathVariable long id
     ) {
         service.deletePost(id);
-        SuccessCode code = SuccessCode.POST_DELETED;
 
         return ResponseEntity
-                .status(code.getHttpStatus())
-                .body(ApiResponse.of(code, null));
+                .status(HttpStatus.OK)
+                .body(CommonResponse.success(
+                        "게시글이 삭제되었습니다.",
+                        null
+                ));
     }
 }

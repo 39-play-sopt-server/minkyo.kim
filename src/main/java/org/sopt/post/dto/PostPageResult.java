@@ -1,6 +1,6 @@
-package org.sopt.server;
+package org.sopt.post.dto;
 
-import org.sopt.domain.Post;
+import org.sopt.post.domain.Post;
 
 import java.util.List;
 
@@ -11,7 +11,7 @@ import java.util.List;
  * @param totalPages 전체 페이지 수
  * @param hasNext 다음 페이지 존재 여부
  */
-public record PageResult(
+public record PostPageResult(
         List<Post> posts,
         int totalPages,
         boolean hasNext

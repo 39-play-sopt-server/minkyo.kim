@@ -1,7 +1,7 @@
-package org.sopt.domain;
+package org.sopt.post.domain;
 
 import org.sopt.common.exception.CustomException;
-import org.sopt.common.code.ErrorCode;
+import org.sopt.post.exception.PostErrorCode;
 
 /**
  * 게시글이 속할 수 있는 카테고리와 사용자에게 표시할 이름을 정의합니다.
@@ -30,7 +30,7 @@ public enum Category {
      */
     public static Category fromString(String input) {
         if (input == null || input.isBlank()) {
-            throw new CustomException(ErrorCode.CATEGORY_REQUIRED);
+            throw new CustomException(PostErrorCode.CATEGORY_REQUIRED);
         }
 
         for (Category category : values()) {
@@ -39,6 +39,6 @@ public enum Category {
             }
         }
 
-        throw new CustomException(ErrorCode.INVALID_CATEGORY);
+        throw new CustomException(PostErrorCode.INVALID_CATEGORY);
     }
 }

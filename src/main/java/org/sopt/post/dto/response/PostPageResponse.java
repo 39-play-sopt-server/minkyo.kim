@@ -1,6 +1,6 @@
-package org.sopt.response;
+package org.sopt.post.dto.response;
 
-import org.sopt.server.PageResult;
+import org.sopt.post.dto.PostPageResult;
 
 import java.util.List;
 
@@ -11,7 +11,7 @@ import java.util.List;
  * @param totalPages 전체 페이지 수
  * @param hasNext 다음 페이지 존재 여부
  */
-public record PageResponse(
+public record PostPageResponse(
         List<PostResponse> posts,
         int totalPages,
         boolean hasNext
@@ -19,20 +19,20 @@ public record PageResponse(
     /**
      * 내부 페이지 조회 결과를 클라이언트 응답으로 변환합니다.
      *
-     * @param pageResult 변환할 게시글 페이지 조회 결과
+     * @param postPageResult 변환할 게시글 페이지 조회 결과
      * @return 클라이언트에 전달할 페이지 응답
      */
-    public static PageResponse from(
-            PageResult pageResult
+    public static PostPageResponse from(
+            PostPageResult postPageResult
     ) {
-        List<PostResponse> posts = pageResult.posts().stream()
+        List<PostResponse> posts = postPageResult.posts().stream()
                 .map(PostResponse::from)
                 .toList();
 
-        return new PageResponse(
+        return new PostPageResponse(
                 posts,
-                pageResult.totalPages(),
-                pageResult.hasNext()
+                postPageResult.totalPages(),
+                postPageResult.hasNext()
         );
     }
 }

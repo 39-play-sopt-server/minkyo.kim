@@ -1,7 +1,7 @@
-package org.sopt.domain;
+package org.sopt.post.domain;
 
 import jakarta.persistence.*;
-import org.sopt.common.code.ErrorCode;
+import org.sopt.post.exception.PostErrorCode;
 import org.sopt.common.exception.CustomException;
 
 import java.time.LocalDateTime;
@@ -133,16 +133,16 @@ public class Post {
             String writer
     ) {
         if (title == null || title.isBlank()) {
-            throw new CustomException(ErrorCode.TITLE_REQUIRED);
+            throw new CustomException(PostErrorCode.TITLE_REQUIRED);
         }
         if (content == null || content.isBlank()) {
-            throw new CustomException(ErrorCode.CONTENT_REQUIRED);
+            throw new CustomException(PostErrorCode.CONTENT_REQUIRED);
         }
         if (category == null) {
-            throw new CustomException(ErrorCode.CATEGORY_REQUIRED);
+            throw new CustomException(PostErrorCode.CATEGORY_REQUIRED);
         }
         if (writer == null || writer.isBlank()) {
-            throw new CustomException(ErrorCode.WRITER_REQUIRED);
+            throw new CustomException(PostErrorCode.WRITER_REQUIRED);
         }
     }
 }

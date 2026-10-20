@@ -1,14 +1,15 @@
-package org.sopt.server.controller;
+package org.sopt.post.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.sopt.request.CreatePostRequest;
-import org.sopt.request.UpdatePostRequest;
-import org.sopt.response.PageResponse;
-import org.sopt.response.PostResponse;
+import org.sopt.common.response.CommonResponse;
+import org.sopt.post.dto.request.CreatePostRequest;
+import org.sopt.post.dto.request.UpdatePostRequest;
+import org.sopt.post.dto.response.PostPageResponse;
+import org.sopt.post.dto.response.PostResponse;
 import org.springframework.http.ResponseEntity;
 
 /**
@@ -27,7 +28,7 @@ public interface PostApiDocs {
                             """
             )
     })
-    ResponseEntity<org.sopt.response.ApiResponse<Void>> createPost(
+    ResponseEntity<CommonResponse<Void>> createPost(
             CreatePostRequest request
     );
 
@@ -43,7 +44,7 @@ public interface PostApiDocs {
                     """
             )
     })
-    ResponseEntity<org.sopt.response.ApiResponse<PageResponse>> readPosts(
+    ResponseEntity<CommonResponse<PostPageResponse>> readPosts(
             @Parameter(description = """
                     카테고리별 조회 시 검색할 카테고리 \n
                     ** 검색 가능한 카테고리: `NOTICE`, `QUESTION`, `GENERAL`, `INFORMATION`
@@ -58,7 +59,7 @@ public interface PostApiDocs {
             @ApiResponse(responseCode = "200", description = "게시글 조회 성공"),
             @ApiResponse(responseCode = "404", description = "게시글이 존재하지 않는 경우")
     })
-    ResponseEntity<org.sopt.response.ApiResponse<PostResponse>> readPost(
+    ResponseEntity<CommonResponse<PostResponse>> readPost(
             @Parameter(description = "조회할 게시글 ID") long id
     );
 
@@ -74,7 +75,7 @@ public interface PostApiDocs {
             ),
             @ApiResponse(responseCode = "404", description = "게시글이 존재하지 않는 경우")
     })
-    ResponseEntity<org.sopt.response.ApiResponse<Void>> updatePost(
+    ResponseEntity<CommonResponse<Void>> updatePost(
             @Parameter(description = "수정할 게시글 ID") long id,
             UpdatePostRequest request
     );
@@ -83,7 +84,7 @@ public interface PostApiDocs {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "게시글 삭제 성공")
     })
-    ResponseEntity<org.sopt.response.ApiResponse<Void>> deletePost(
+    ResponseEntity<CommonResponse<Void>> deletePost(
             @Parameter(description = "삭제할 게시글 ID") long id
     );
 }
