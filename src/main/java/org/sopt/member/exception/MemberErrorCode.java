@@ -1,0 +1,31 @@
+package org.sopt.member.exception;
+
+import org.sopt.common.exception.code.ErrorCode;
+import org.springframework.http.HttpStatus;
+
+public enum MemberErrorCode implements ErrorCode {
+    NICKNAME_REQUIRED(HttpStatus.BAD_REQUEST, "닉네임은 필수 입력 항목입니다.");
+
+    private final HttpStatus httpStatus;
+    private final String message;
+
+    MemberErrorCode(HttpStatus httpStatus, String message) {
+        this.httpStatus = httpStatus;
+        this.message = message;
+    }
+
+    @Override
+    public String getCode() {
+        return this.name();
+    }
+
+    @Override
+    public String getMessage() {
+        return message;
+    }
+
+    @Override
+    public HttpStatus getHttpStatus() {
+        return httpStatus;
+    }
+}
