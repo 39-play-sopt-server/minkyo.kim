@@ -12,6 +12,7 @@ import java.util.Optional;
  * 게시글의 상태를 나타내는 도메인 객체입니다.
  */
 @Entity
+@Table(name = "posts")
 public class Post extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
