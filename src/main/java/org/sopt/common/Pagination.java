@@ -1,6 +1,6 @@
 package org.sopt.common;
 
-import org.sopt.common.code.CommonErrorCode;
+import org.sopt.common.exception.code.CommonErrorCode;
 import org.sopt.common.exception.CustomException;
 
 /**

@@ -1,7 +1,7 @@
 package org.sopt.common.exception;
 
-import org.sopt.common.code.CommonErrorCode;
-import org.sopt.common.code.ErrorCode;
+import org.sopt.common.exception.code.CommonErrorCode;
+import org.sopt.common.exception.code.ErrorCode;
 import org.sopt.common.response.CommonResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;

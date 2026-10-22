@@ -1,6 +1,6 @@
 package org.sopt.common.response;
 
-import org.sopt.common.code.ErrorCode;
+import org.sopt.common.exception.code.ErrorCode;
 
 /**
  * 서버가 클라이언트에 전달하는 공통 응답 형식을 나타냅니다.

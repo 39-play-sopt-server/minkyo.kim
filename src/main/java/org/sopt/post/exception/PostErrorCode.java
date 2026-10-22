@@ -1,6 +1,6 @@
 package org.sopt.post.exception;
 
-import org.sopt.common.code.ErrorCode;
+import org.sopt.common.exception.code.ErrorCode;
 import org.springframework.http.HttpStatus;
 
 /**
