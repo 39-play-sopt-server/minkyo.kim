@@ -59,7 +59,7 @@ public class PostService {
      * @return 조회된 게시글
      */
     @Transactional
-    public Post readPost(long id) {
+    public Post readPost(Long id) {
         Post post = getPost(id);
 
         repository.increaseViewCount(id);
@@ -107,7 +107,7 @@ public class PostService {
      * @param request 게시글 수정 요청
      */
     @Transactional
-    public void updatePost(long id, UpdatePostRequest request) {
+    public void updatePost(Long id, UpdatePostRequest request) {
         Post post = getPost(id);
 
         Optional<Category> category = request
@@ -126,12 +126,12 @@ public class PostService {
      *
      * @param id 삭제할 게시글 ID
      */
-    public void deletePost(long id) {
+    public void deletePost(Long id) {
         Post post = getPost(id);
         repository.delete(post);
     }
 
-    private Post getPost(long id) {
+    private Post getPost(Long id) {
         return repository.findById(id)
                 .orElseThrow(
                         () -> new CustomException(PostErrorCode.POST_NOT_FOUND)
