@@ -60,10 +60,7 @@ public class PostService {
      */
     @Transactional
     public Post readPost(long id) {
-        Post post = repository.findById(id)
-                .orElseThrow(
-                        () -> new CustomException(PostErrorCode.POST_NOT_FOUND)
-                );
+        Post post = getPost(id);
 
         repository.increaseViewCount(id);
         entityManager.refresh(post);
@@ -111,10 +108,7 @@ public class PostService {
      */
     @Transactional
     public void updatePost(long id, UpdatePostRequest request) {
-        Post post = repository.findById(id)
-                .orElseThrow(
-                        () -> new CustomException(PostErrorCode.POST_NOT_FOUND)
-                );
+        Post post = getPost(id);
 
         Optional<Category> category = request
                 .category()
@@ -133,6 +127,14 @@ public class PostService {
      * @param id 삭제할 게시글 ID
      */
     public void deletePost(long id) {
-        repository.deleteById(id);
+        Post post = getPost(id);
+        repository.delete(post);
+    }
+
+    private Post getPost(long id) {
+        return repository.findById(id)
+                .orElseThrow(
+                        () -> new CustomException(PostErrorCode.POST_NOT_FOUND)
+                );
     }
 }
