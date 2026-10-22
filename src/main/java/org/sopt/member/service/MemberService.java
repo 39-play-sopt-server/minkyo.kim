@@ -2,6 +2,8 @@ package org.sopt.member.service;
 
 import org.sopt.common.exception.CustomException;
 import org.sopt.member.domain.Member;
+import org.sopt.member.dto.request.CreateMemberRequest;
+import org.sopt.member.dto.request.UpdateMemberRequest;
 import org.sopt.member.exception.MemberErrorCode;
 import org.sopt.member.repository.MemberRepository;
 import org.springframework.stereotype.Service;
@@ -15,17 +17,17 @@ public class MemberService {
         this.repository = repository;
     }
 
-    public Long createMember(String nickname) {
-        Member member = new Member(nickname);
+    public Long createMember(CreateMemberRequest request) {
+        Member member = new Member(request.nickname());
 
         Member savedMember = repository.save(member);
         return savedMember.getId();
     }
 
     @Transactional
-    public void updateMember(Long id, String newNickname) {
+    public void updateMember(Long id, UpdateMemberRequest request) {
         Member member = getMember(id);
-        member.update(newNickname);
+        member.update(request.nickname());
     }
 
     public void deleteMember(Long id) {
