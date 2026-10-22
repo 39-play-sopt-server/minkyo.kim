@@ -1,6 +1,7 @@
 package org.sopt.post.domain;
 
 import jakarta.persistence.*;
+import org.sopt.common.BaseEntity;
 import org.sopt.post.exception.PostErrorCode;
 import org.sopt.common.exception.CustomException;
 
@@ -11,7 +12,7 @@ import java.util.Optional;
  * 게시글의 상태를 나타내는 도메인 객체입니다.
  */
 @Entity
-public class Post {
+public class Post extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -31,9 +32,6 @@ public class Post {
 
     @Column(nullable = false)
     private long viewCount;
-
-    @Column(nullable = false)
-    private LocalDateTime createdAt;
 
     @Column(nullable = false)
     private LocalDateTime updatedAt;
@@ -63,7 +61,6 @@ public class Post {
         this.category = category;
         this.writer = writer;
         this.viewCount = 0;
-        this.createdAt = now;
         this.updatedAt = now;
     }
 
@@ -89,10 +86,6 @@ public class Post {
 
     public long getViewCount() {
         return this.viewCount;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return this.createdAt;
     }
 
     public LocalDateTime getUpdatedAt() {
