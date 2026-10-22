@@ -60,7 +60,7 @@ public interface PostApiDocs {
             @ApiResponse(responseCode = "404", description = "게시글이 존재하지 않는 경우")
     })
     ResponseEntity<CommonResponse<PostResponse>> readPost(
-            @Parameter(description = "조회할 게시글 ID") long id
+            @Parameter(description = "조회할 게시글 ID") Long id
     );
 
     @Operation(summary = "게시글 수정")
@@ -76,7 +76,7 @@ public interface PostApiDocs {
             @ApiResponse(responseCode = "404", description = "게시글이 존재하지 않는 경우")
     })
     ResponseEntity<CommonResponse<Void>> updatePost(
-            @Parameter(description = "수정할 게시글 ID") long id,
+            @Parameter(description = "수정할 게시글 ID") Long id,
             UpdatePostRequest request
     );
 
@@ -85,6 +85,6 @@ public interface PostApiDocs {
             @ApiResponse(responseCode = "200", description = "게시글 삭제 성공")
     })
     ResponseEntity<CommonResponse<Void>> deletePost(
-            @Parameter(description = "삭제할 게시글 ID") long id
+            @Parameter(description = "삭제할 게시글 ID") Long id
     );
 }

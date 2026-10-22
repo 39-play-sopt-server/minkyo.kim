@@ -88,7 +88,7 @@ public class PostController implements PostApiDocs {
     @Override
     @GetMapping(path = "/{id}")
     public ResponseEntity<CommonResponse<PostResponse>> readPost(
-            @PathVariable long id
+            @PathVariable Long id
     ) {
         Post post = service.readPost(id);
 
@@ -110,7 +110,7 @@ public class PostController implements PostApiDocs {
     @Override
     @PatchMapping(path = "/{id}")
     public ResponseEntity<CommonResponse<Void>> updatePost(
-            @PathVariable long id,
+            @PathVariable Long id,
             @RequestBody(required = true) UpdatePostRequest request
     ) {
         service.updatePost(id, request);
@@ -132,7 +132,7 @@ public class PostController implements PostApiDocs {
     @Override
     @DeleteMapping(path = "/{id}")
     public ResponseEntity<CommonResponse<Void>> deletePost(
-            @PathVariable long id
+            @PathVariable Long id
     ) {
         service.deletePost(id);
 
