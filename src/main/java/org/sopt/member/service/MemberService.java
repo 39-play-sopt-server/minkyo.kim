@@ -18,6 +18,9 @@ public class MemberService {
     }
 
     public Long createMember(CreateMemberRequest request) {
+        if (repository.existsByNickname(request.nickname())) {
+            throw new CustomException(MemberErrorCode.NICKNAME_DUPLICATED);
+        }
         Member member = new Member(request.nickname());
 
         Member savedMember = repository.save(member);
@@ -30,13 +33,14 @@ public class MemberService {
         member.update(request.nickname());
     }
 
+    @Transactional
     public void deleteMember(Long id) {
         Member member = getMember(id);
-        repository.delete(member);
+        member.delete();
     }
 
     private Member getMember(Long id) {
-        return repository.findById(id)
+        return repository.findByIdAndIsDeletedFalse(id)
                 .orElseThrow(
                         () -> new CustomException(MemberErrorCode.MEMBER_NOT_FOUND)
                 );

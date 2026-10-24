@@ -26,7 +26,8 @@ public interface PostApiDocs {
                             - 제목･내용･작성자･카테고리 중 하나라도 비어 있는 경우
                             - 유효하지 않은 카테고리인 경우
                             """
-            )
+            ),
+            @ApiResponse(responseCode = "404", description = "작성자 회원이 존재하지 않는 경우")
     })
     ResponseEntity<CommonResponse<Void>> createPost(
             CreatePostRequest request
@@ -82,7 +83,8 @@ public interface PostApiDocs {
 
     @Operation(summary = "게시글 삭제")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "게시글 삭제 성공")
+            @ApiResponse(responseCode = "200", description = "게시글 삭제 성공"),
+            @ApiResponse(responseCode = "404", description = "게시글이 존재하지 않는 경우")
     })
     ResponseEntity<CommonResponse<Void>> deletePost(
             @Parameter(description = "삭제할 게시글 ID") Long id

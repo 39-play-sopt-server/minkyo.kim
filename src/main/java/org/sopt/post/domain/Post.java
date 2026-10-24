@@ -2,6 +2,7 @@ package org.sopt.post.domain;
 
 import jakarta.persistence.*;
 import org.sopt.common.BaseEntity;
+import org.sopt.member.domain.Member;
 import org.sopt.post.exception.PostErrorCode;
 import org.sopt.common.exception.CustomException;
 
@@ -28,8 +29,9 @@ public class Post extends BaseEntity {
     @Column(nullable = false)
     private Category category;
 
-    @Column(nullable = false)
-    private String writer;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "member_id", nullable = false)
+    private Member writer;
 
     @Column(nullable = false)
     private long viewCount;
@@ -50,7 +52,7 @@ public class Post extends BaseEntity {
             String title,
             String content,
             Category category,
-            String writer
+            Member writer
     ) {
         validate(title, content, category, writer);
 
@@ -81,7 +83,7 @@ public class Post extends BaseEntity {
         return this.category;
     }
 
-    public String getWriter() {
+    public Member getWriter() {
         return this.writer;
     }
 
@@ -124,7 +126,7 @@ public class Post extends BaseEntity {
             String title,
             String content,
             Category category,
-            String writer
+            Member writer
     ) {
         if (title == null || title.isBlank()) {
             throw new CustomException(PostErrorCode.TITLE_REQUIRED);
@@ -135,7 +137,7 @@ public class Post extends BaseEntity {
         if (category == null) {
             throw new CustomException(PostErrorCode.CATEGORY_REQUIRED);
         }
-        if (writer == null || writer.isBlank()) {
+        if (writer == null) {
             throw new CustomException(PostErrorCode.WRITER_REQUIRED);
         }
     }

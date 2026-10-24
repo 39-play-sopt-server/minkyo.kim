@@ -6,12 +6,12 @@ package org.sopt.post.dto.request;
  * @param title 게시글 제목
  * @param content 게시글 내용
  * @param category 게시글 카테고리
- * @param writer 게시글 작성자
+ * @param writerId 게시글 작성자 ID
  */
 public record CreatePostRequest(
         String title,
         String content,
         String category,
-        String writer
+        Long writerId
 ) {
 }

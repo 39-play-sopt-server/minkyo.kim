@@ -1,6 +1,9 @@
 package org.sopt.post.service;
 
 import jakarta.persistence.EntityManager;
+import org.sopt.member.domain.Member;
+import org.sopt.member.exception.MemberErrorCode;
+import org.sopt.member.repository.MemberRepository;
 import org.sopt.post.domain.Category;
 import org.sopt.post.domain.Post;
 import org.sopt.common.exception.CustomException;
@@ -24,14 +27,17 @@ import java.util.Optional;
  */
 @Service
 public class PostService {
-    private final PostRepository repository;
+    private final PostRepository postRepository;
+    private final MemberRepository memberRepository;
     private final EntityManager entityManager;
 
     public PostService(
-            PostRepository repository,
+            PostRepository postRepository,
+            MemberRepository memberRepository,
             EntityManager entityManager
     ) {
-        this.repository = repository;
+        this.postRepository = postRepository;
+        this.memberRepository = memberRepository;
         this.entityManager = entityManager;
     }
 
@@ -41,15 +47,23 @@ public class PostService {
      * @param request 게시글 생성 요청
      */
     public void createPost(CreatePostRequest request) {
+        if (request.writerId() == null) {
+            throw new CustomException(PostErrorCode.WRITER_REQUIRED);
+        }
+
+        Member writer = memberRepository.findByIdAndIsDeletedFalse(request.writerId())
+                .orElseThrow(
+                        () -> new CustomException(MemberErrorCode.MEMBER_NOT_FOUND)
+                );
         Category category = Category.fromString(request.category());
 
         Post post = new Post(
                 request.title(),
                 request.content(),
                 category,
-                request.writer()
+                writer
         );
-        repository.save(post);
+        postRepository.save(post);
     }
 
     /**
@@ -62,7 +76,7 @@ public class PostService {
     public Post readPost(Long id) {
         Post post = getPost(id);
 
-        repository.increaseViewCount(id);
+        postRepository.increaseViewCount(id);
         entityManager.refresh(post);
 
         return post;
@@ -83,15 +97,17 @@ public class PostService {
         Pageable pageRequest = PageRequest.of(
                 pagination.page(),
                 pagination.size(),
-                Sort.by(Sort.Direction.DESC, "id")
+                Sort.by(Sort.Order.desc("createdAt"),
+                        Sort.Order.desc("id")
+                )
         );
 
         Page<Post> result = categoryValue != null ?
-                repository.findAllByCategory(
+                postRepository.findAllByCategory(
                         Category.fromString(categoryValue),
                         pageRequest
                 )
-                : repository.findAll(pageRequest);
+                : postRepository.findAll(pageRequest);
 
         return new PostPageResult(
                 result.getContent(),
@@ -128,11 +144,11 @@ public class PostService {
      */
     public void deletePost(Long id) {
         Post post = getPost(id);
-        repository.delete(post);
+        postRepository.delete(post);
     }
 
     private Post getPost(Long id) {
-        return repository.findById(id)
+        return postRepository.findById(id)
                 .orElseThrow(
                         () -> new CustomException(PostErrorCode.POST_NOT_FOUND)
                 );

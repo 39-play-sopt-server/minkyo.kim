@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
  * @param title 게시글 제목
  * @param content 게시글 내용
  * @param category 카테고리 표시 이름
- * @param writer 게시글 작성자
+ * @param writerNickname 게시글 작성자
  * @param viewCount 게시글 조회수
  * @param createdAt 게시글 생성 시각
  * @param updatedAt 게시글 수정 시각
@@ -21,7 +21,7 @@ public record PostResponse(
         String title,
         String content,
         String category,
-        String writer,
+        String writerNickname,
         long viewCount,
         LocalDateTime createdAt,
         LocalDateTime updatedAt
@@ -38,7 +38,7 @@ public record PostResponse(
                 post.getTitle(),
                 post.getContent(),
                 post.getCategory().getName(),
-                post.getWriter(),
+                post.getWriter().getDisplayNickname(),
                 post.getViewCount(),
                 post.getCreatedAt(),
                 post.getUpdatedAt()

@@ -12,14 +12,18 @@ public class Member extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(unique = true, nullable = false)
     private String nickname;
+
+    @Column(nullable = false)
+    private boolean isDeleted;
 
     protected Member() {}
 
     public Member(String nickname) {
         validate(nickname);
         this.nickname = nickname;
+        isDeleted = false;
     }
 
     public void update(String nickname) {
@@ -27,8 +31,19 @@ public class Member extends BaseEntity {
         this.nickname = nickname;
     }
 
+    public void delete() {
+        isDeleted = true;
+        nickname = "d_" + nickname;
+    }
+
     public Long getId() {
         return id;
+    }
+
+    public String getDisplayNickname() {
+        return isDeleted
+                ? "탈퇴한 회원"
+                : nickname;
     }
 
     private static void validate(String nickname) {
