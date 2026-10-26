@@ -50,7 +50,9 @@ public class PostController implements PostApiDocs {
      * 게시글 목록을 페이지 단위로 조회하며,
      * 카테고리가 전달되면 해당 카테고리를 가진 게시글만 반환합니다.
      *
-     * @param category 조회할 카테고리, 생략하면 전체 조회
+     * @param title 검색할 제목, 생략하면 제목 조건 미적용
+     * @param writerId 작성자 회원 ID, 생략하면 작성자 조건 미적용
+     * @param category 조회할 카테고리, 생략하면 카테고리 조건 미적용
      * @param page 조회할 페이지 번호
      * @param size 한 페이지에서 조회할 게시글 수
      * @return 게시글 목록 조회 결과
@@ -58,12 +60,19 @@ public class PostController implements PostApiDocs {
     @Override
     @GetMapping
     public ResponseEntity<CommonResponse<PostPageResponse>> readPosts(
+            @RequestParam(required = false) String title,
+            @RequestParam(required = false) Long writerId,
             @RequestParam(required = false) String category,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
         Pagination pagination = new Pagination(page, size);
-        PostPageResult postPageResult = service.readPosts(category, pagination);
+        PostPageResult postPageResult = service.readPosts(
+                title,
+                writerId,
+                category,
+                pagination
+        );
 
         PostPageResponse postPageResponse = PostPageResponse.from(postPageResult);
 

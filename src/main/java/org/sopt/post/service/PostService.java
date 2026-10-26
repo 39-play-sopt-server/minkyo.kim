@@ -7,6 +7,7 @@ import org.sopt.member.repository.MemberRepository;
 import org.sopt.post.domain.Category;
 import org.sopt.post.domain.Post;
 import org.sopt.common.exception.CustomException;
+import org.sopt.post.dto.PostSearchCondition;
 import org.sopt.post.exception.PostErrorCode;
 import org.sopt.post.dto.request.CreatePostRequest;
 import org.sopt.common.Pagination;
@@ -16,7 +17,6 @@ import org.sopt.post.repository.PostRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -86,28 +86,33 @@ public class PostService {
      * 게시글 목록을 페이지 단위로 조회하며,
      * 카테고리가 전달되면 해당 카테고리를 가진 게시글만 반환합니다.
      *
-     * @param categoryValue 조회할 카테고리, 없으면 전체 조회
+     * @param title 검색할 제목, 없으면 제목 조건 미적용
+     * @param writerId 작성자 ID, 없으면 작성자 조건 미적용
+     * @param categoryValue 조회할 카테고리, 없으면 카테고리 조건 미적용
      * @param pagination 페이지 조회 조건
      * @return 현재 페이지의 게시글과 페이지 상태
      */
     public PostPageResult readPosts(
+            String title,
+            Long writerId,
             String categoryValue,
             Pagination pagination
     ) {
-        Pageable pageRequest = PageRequest.of(
-                pagination.page(),
-                pagination.size(),
-                Sort.by(Sort.Order.desc("createdAt"),
-                        Sort.Order.desc("id")
-                )
+        Category category = categoryValue == null
+                ? null
+                : Category.fromString(categoryValue);
+        PostSearchCondition condition = new PostSearchCondition(
+                title,
+                writerId,
+                category
         );
 
-        Page<Post> result = categoryValue != null ?
-                postRepository.findAllByCategory(
-                        Category.fromString(categoryValue),
-                        pageRequest
-                )
-                : postRepository.findAll(pageRequest);
+        Pageable pageRequest = PageRequest.of(
+                pagination.page(),
+                pagination.size()
+        );
+
+        Page<Post> result = postRepository.search(condition, pageRequest);
 
         return new PostPageResult(
                 result.getContent(),

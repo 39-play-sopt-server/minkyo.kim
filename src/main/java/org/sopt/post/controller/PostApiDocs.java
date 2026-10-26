@@ -46,6 +46,8 @@ public interface PostApiDocs {
             )
     })
     ResponseEntity<CommonResponse<PostPageResponse>> readPosts(
+            @Parameter(description = "검색할 게시글 제목") String title,
+            @Parameter(description = "작성자 회원 ID") Long writerId,
             @Parameter(description = """
                     카테고리별 조회 시 검색할 카테고리 \n
                     ** 검색 가능한 카테고리: `NOTICE`, `QUESTION`, `GENERAL`, `INFORMATION`
