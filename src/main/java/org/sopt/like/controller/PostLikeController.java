@@ -1,14 +1,13 @@
 package org.sopt.like.controller;
 
 import org.sopt.common.response.CommonResponse;
-import org.sopt.like.dto.request.PostLikeCreateRequest;
 import org.sopt.like.service.PostLikeService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/posts")
+@RequestMapping("/api/v1/posts/{postId}/likes/{memberId}")
 public class PostLikeController {
     private final PostLikeService postLikeService;
 
@@ -16,17 +15,32 @@ public class PostLikeController {
         this.postLikeService = postLikeService;
     }
 
-    @PostMapping("/{postId}/likes")
+    @PutMapping
     public ResponseEntity<CommonResponse<Void>> createPostLike(
             @PathVariable(required = true) Long postId,
-            @RequestBody(required = true) PostLikeCreateRequest request
+            @PathVariable(required = true) Long memberId
     ) {
-        postLikeService.createPostLike(postId, request.memberId());
+        postLikeService.createPostLike(postId, memberId);
 
         return ResponseEntity
-                .status(HttpStatus.CREATED)
+                .status(HttpStatus.OK)
                 .body(CommonResponse.success(
                         "좋아요가 등록되었습니다.",
+                        null
+                ));
+    }
+
+    @DeleteMapping
+    public ResponseEntity<CommonResponse<Void>> deletePostLike(
+            @PathVariable(required = true) Long postId,
+            @PathVariable(required = true) Long memberId
+    ) {
+        postLikeService.deletePostLike(postId, memberId);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(CommonResponse.success(
+                        "좋아요가 취소되었습니다.",
                         null
                 ));
     }
