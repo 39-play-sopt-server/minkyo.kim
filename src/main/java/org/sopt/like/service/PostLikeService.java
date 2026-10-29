@@ -10,6 +10,9 @@ import org.sopt.post.repository.PostRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * 게시글 좋아요 등록과 취소에 관련된 비즈니스 로직을 처리합니다.
+ */
 @Service
 public class PostLikeService {
     private final PostLikeRepository postLikeRepository;
@@ -26,6 +29,13 @@ public class PostLikeService {
         this.memberRepository = memberRepository;
     }
 
+    /**
+     * 게시글과 회원의 존재 여부를 확인하고 좋아요를 등록합니다.
+     * 이미 등록된 좋아요는 다시 저장하지 않습니다.
+     *
+     * @param postId 좋아요를 등록할 게시글 ID
+     * @param memberId 좋아요를 등록할 회원 ID
+     */
     public void createPostLike(Long postId, Long memberId) {
         validatePostId(postId);
         validateMemberId(memberId);
@@ -38,6 +48,12 @@ public class PostLikeService {
         postLikeRepository.save(like);
     }
 
+    /**
+     * 게시글과 회원의 존재 여부를 확인하고 좋아요를 취소합니다.
+     *
+     * @param postId 좋아요를 취소할 게시글 ID
+     * @param memberId 좋아요를 취소할 회원 ID
+     */
     @Transactional
     public void deletePostLike(Long postId, Long memberId) {
         validatePostId(postId);

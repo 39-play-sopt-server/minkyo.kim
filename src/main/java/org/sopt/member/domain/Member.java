@@ -5,6 +5,9 @@ import org.sopt.common.BaseEntity;
 import org.sopt.common.exception.CustomException;
 import org.sopt.member.exception.MemberErrorCode;
 
+/**
+ * 회원의 상태를 나타내는 도메인 객체입니다.
+ */
 @Entity
 @Table(name = "members")
 public class Member extends BaseEntity {
@@ -20,17 +23,30 @@ public class Member extends BaseEntity {
 
     protected Member() {}
 
+    /**
+     * 저장 전 회원을 생성합니다.
+     *
+     * @param nickname 회원 닉네임
+     */
     public Member(String nickname) {
         validate(nickname);
         this.nickname = nickname;
         isDeleted = false;
     }
 
+    /**
+     * 회원의 닉네임을 수정합니다.
+     *
+     * @param nickname 변경할 닉네임
+     */
     public void update(String nickname) {
         validate(nickname);
         this.nickname = nickname;
     }
 
+    /**
+     * 회원을 탈퇴 상태로 변경하고 기존 닉네임을 비활성화합니다.
+     */
     public void delete() {
         isDeleted = true;
         nickname = "d_" + nickname;
