@@ -8,13 +8,14 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/posts/{postId}/likes/{memberId}")
-public class PostLikeController {
+public class PostLikeController implements PostLikeApiDocs {
     private final PostLikeService postLikeService;
 
     public PostLikeController(PostLikeService postLikeService) {
         this.postLikeService = postLikeService;
     }
 
+    @Override
     @PutMapping
     public ResponseEntity<CommonResponse<Void>> createPostLike(
             @PathVariable(required = true) Long postId,
@@ -30,6 +31,7 @@ public class PostLikeController {
                 ));
     }
 
+    @Override
     @DeleteMapping
     public ResponseEntity<CommonResponse<Void>> deletePostLike(
             @PathVariable(required = true) Long postId,

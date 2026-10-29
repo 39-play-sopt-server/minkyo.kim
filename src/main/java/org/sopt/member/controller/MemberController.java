@@ -11,13 +11,14 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/members")
-public class MemberController {
+public class MemberController implements MemberApiDocs {
     private final MemberService service;
 
     public MemberController(MemberService service) {
         this.service = service;
     }
 
+    @Override
     @PostMapping
     public ResponseEntity<CommonResponse<CreateMemberResponse>> createMember(
             @RequestBody(required = true) CreateMemberRequest request
@@ -32,6 +33,7 @@ public class MemberController {
                 ));
     }
 
+    @Override
     @PatchMapping(path = "/{id}")
     public ResponseEntity<CommonResponse<Void>> updateMember(
             @PathVariable Long id,
@@ -47,6 +49,7 @@ public class MemberController {
                 ));
     }
 
+    @Override
     @DeleteMapping(path = "/{id}")
     public ResponseEntity<CommonResponse<Void>> deleteMember(
             @PathVariable Long id
