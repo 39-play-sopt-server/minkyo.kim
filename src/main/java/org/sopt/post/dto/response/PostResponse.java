@@ -23,6 +23,7 @@ public record PostResponse(
         String category,
         String writerNickname,
         long viewCount,
+        long likeCount,
         LocalDateTime createdAt,
         LocalDateTime updatedAt
 ) {
@@ -32,7 +33,10 @@ public record PostResponse(
      * @param post 변환할 게시글
      * @return 클라이언트에 전달할 게시글 응답
      */
-    public static PostResponse from(Post post) {
+    public static PostResponse from(
+            Post post,
+            long likeCount
+    ) {
         return new PostResponse(
                 post.getId(),
                 post.getTitle(),
@@ -40,6 +44,7 @@ public record PostResponse(
                 post.getCategory().getName(),
                 post.getWriter().getDisplayNickname(),
                 post.getViewCount(),
+                likeCount,
                 post.getCreatedAt(),
                 post.getUpdatedAt()
         );

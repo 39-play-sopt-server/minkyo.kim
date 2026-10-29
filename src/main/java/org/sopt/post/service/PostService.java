@@ -1,12 +1,14 @@
 package org.sopt.post.service;
 
 import jakarta.persistence.EntityManager;
+import org.sopt.like.repository.PostLikeRepository;
 import org.sopt.member.domain.Member;
 import org.sopt.member.exception.MemberErrorCode;
 import org.sopt.member.repository.MemberRepository;
 import org.sopt.post.domain.Category;
 import org.sopt.post.domain.Post;
 import org.sopt.common.exception.CustomException;
+import org.sopt.post.dto.PostDetailResult;
 import org.sopt.post.dto.PostSearchCondition;
 import org.sopt.post.exception.PostErrorCode;
 import org.sopt.post.dto.request.CreatePostRequest;
@@ -29,15 +31,18 @@ import java.util.Optional;
 public class PostService {
     private final PostRepository postRepository;
     private final MemberRepository memberRepository;
+    private final PostLikeRepository postLikeRepository;
     private final EntityManager entityManager;
 
     public PostService(
             PostRepository postRepository,
             MemberRepository memberRepository,
+            PostLikeRepository postLikeRepository,
             EntityManager entityManager
     ) {
         this.postRepository = postRepository;
         this.memberRepository = memberRepository;
+        this.postLikeRepository = postLikeRepository;
         this.entityManager = entityManager;
     }
 
@@ -73,13 +78,15 @@ public class PostService {
      * @return 조회된 게시글
      */
     @Transactional
-    public Post readPost(Long id) {
+    public PostDetailResult readPost(Long id) {
         Post post = getPost(id);
 
         postRepository.increaseViewCount(id);
         entityManager.refresh(post);
 
-        return post;
+        long likeCount = postLikeRepository.countByPostId(id);
+
+        return new PostDetailResult(post, likeCount);
     }
 
     /**

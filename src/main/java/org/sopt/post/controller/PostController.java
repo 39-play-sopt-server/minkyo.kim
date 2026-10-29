@@ -1,5 +1,6 @@
 package org.sopt.post.controller;
 
+import org.sopt.post.dto.PostDetailResult;
 import org.sopt.post.dto.PostPageResult;
 import org.sopt.post.domain.Post;
 import org.sopt.post.dto.request.CreatePostRequest;
@@ -99,13 +100,16 @@ public class PostController implements PostApiDocs {
     public ResponseEntity<CommonResponse<PostResponse>> readPost(
             @PathVariable Long id
     ) {
-        Post post = service.readPost(id);
+        PostDetailResult postDetailResult = service.readPost(id);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(CommonResponse.success(
                         null,
-                        PostResponse.from(post)
+                        PostResponse.from(
+                                postDetailResult.post(),
+                                postDetailResult.likeCount()
+                        )
                 ));
     }
 
