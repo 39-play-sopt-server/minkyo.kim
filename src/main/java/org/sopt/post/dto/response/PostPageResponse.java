@@ -26,7 +26,14 @@ public record PostPageResponse(
             PostPageResult postPageResult
     ) {
         List<PostResponse> posts = postPageResult.posts().stream()
-                .map(PostResponse::from)
+                .map(post -> PostResponse.from(
+                        post,
+                        postPageResult.likeCounts()
+                                .getOrDefault(
+                                        post.getId(),
+                                        0L
+                                )
+                ))
                 .toList();
 
         return new PostPageResponse(

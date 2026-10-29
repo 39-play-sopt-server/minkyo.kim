@@ -2,6 +2,7 @@ package org.sopt.post.service;
 
 import jakarta.persistence.EntityManager;
 import org.sopt.like.repository.PostLikeRepository;
+import org.sopt.like.repository.projection.PostLikeCountProjection;
 import org.sopt.member.domain.Member;
 import org.sopt.member.exception.MemberErrorCode;
 import org.sopt.member.repository.MemberRepository;
@@ -22,7 +23,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * 게시글 생성, 조회, 수정, 삭제와 관련된 비즈니스 로직을 처리합니다.
@@ -105,24 +109,22 @@ public class PostService {
             String categoryValue,
             Pagination pagination
     ) {
-        Category category = categoryValue == null
-                ? null
-                : Category.fromString(categoryValue);
-        PostSearchCondition condition = new PostSearchCondition(
+        PostSearchCondition condition = createSearchCondition(
                 title,
                 writerId,
-                category
+                categoryValue
         );
-
         Pageable pageRequest = PageRequest.of(
                 pagination.page(),
                 pagination.size()
         );
 
         Page<Post> result = postRepository.search(condition, pageRequest);
+        Map<Long, Long> likeCounts = getLikeCount(result.getContent());
 
         return new PostPageResult(
                 result.getContent(),
+                likeCounts,
                 result.getTotalPages(),
                 result.hasNext()
         );
@@ -164,5 +166,39 @@ public class PostService {
                 .orElseThrow(
                         () -> new CustomException(PostErrorCode.POST_NOT_FOUND)
                 );
+    }
+
+    private PostSearchCondition createSearchCondition(
+            String title,
+            Long writerId,
+            String categoryValue
+    ) {
+        Category category = categoryValue == null
+                ? null
+                : Category.fromString(categoryValue);
+
+        return new PostSearchCondition(
+                title,
+                writerId,
+                category
+        );
+    }
+
+    private Map<Long, Long> getLikeCount(List<Post> posts) {
+        if (posts.isEmpty()) {
+            return Map.of();
+        }
+
+        List<Long> postIds = posts.stream()
+                .map(Post::getId)
+                .toList();
+
+        return postLikeRepository
+                .countByPostIds(postIds)
+                .stream()
+                .collect(Collectors.toMap(
+                            PostLikeCountProjection::getPostId,
+                            PostLikeCountProjection::getLikeCount
+                ));
     }
 }
