@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
  * @param category 카테고리 표시 이름
  * @param writerNickname 게시글 작성자
  * @param viewCount 게시글 조회수
+ * @param likeCount 게시글 좋아요 수
  * @param createdAt 게시글 생성 시각
  * @param updatedAt 게시글 수정 시각
  */
@@ -31,6 +32,7 @@ public record PostResponse(
      * 서버의 게시글 도메인 객체를 클라이언트 응답으로 변환합니다.
      *
      * @param post 변환할 게시글
+     * @param likeCount 게시글 좋아요 수
      * @return 클라이언트에 전달할 게시글 응답
      */
     public static PostResponse from(

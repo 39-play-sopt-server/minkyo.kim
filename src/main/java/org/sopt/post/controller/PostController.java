@@ -49,7 +49,7 @@ public class PostController implements PostApiDocs {
 
     /**
      * 게시글 목록을 페이지 단위로 조회하며,
-     * 카테고리가 전달되면 해당 카테고리를 가진 게시글만 반환합니다.
+     * 제목･작성자･카테고리가 전달되면 해당 조건에 맞는 게시글만 반환합니다.
      *
      * @param title 검색할 제목, 생략하면 제목 조건 미적용
      * @param writerId 작성자 회원 ID, 생략하면 작성자 조건 미적용

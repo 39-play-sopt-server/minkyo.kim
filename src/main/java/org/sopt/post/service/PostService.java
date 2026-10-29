@@ -76,10 +76,10 @@ public class PostService {
     }
 
     /**
-     * 지정한 ID의 게시글 조회수를 증가시키고 게시글을 반환합니다.
+     * 지정한 ID의 게시글 조회수를 증가시키고 게시글과 좋아요 수를 반환합니다.
      *
      * @param id 조회할 게시글 ID
-     * @return 조회된 게시글
+     * @return 조회된 게시글과 좋아요 수
      */
     @Transactional
     public PostDetailResult readPost(Long id) {
@@ -95,7 +95,7 @@ public class PostService {
 
     /**
      * 게시글 목록을 페이지 단위로 조회하며,
-     * 카테고리가 전달되면 해당 카테고리를 가진 게시글만 반환합니다.
+     * 제목･작성자･카테고리가 전달되면 해당 조건에 맞는 게시글만 반환합니다.
      *
      * @param title 검색할 제목, 없으면 제목 조건 미적용
      * @param writerId 작성자 ID, 없으면 작성자 조건 미적용
