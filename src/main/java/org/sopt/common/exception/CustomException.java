@@ -1,6 +1,6 @@
 package org.sopt.common.exception;
 
-import org.sopt.common.code.ErrorCode;
+import org.sopt.common.exception.code.ErrorCode;
 
 /**
  * 서버의 규칙 위반을 호출 계층에 전달하는 공통 예외입니다.
