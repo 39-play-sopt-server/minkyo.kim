@@ -2,7 +2,6 @@ package org.sopt.post.controller;
 
 import org.sopt.post.dto.PostDetailResult;
 import org.sopt.post.dto.PostPageResult;
-import org.sopt.post.domain.Post;
 import org.sopt.post.dto.request.CreatePostRequest;
 import org.sopt.common.Pagination;
 import org.sopt.post.dto.request.UpdatePostRequest;
@@ -12,6 +11,7 @@ import org.sopt.common.response.CommonResponse;
 import org.sopt.post.service.PostService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -35,9 +35,10 @@ public class PostController implements PostApiDocs {
     @Override
     @PostMapping
     public ResponseEntity<CommonResponse<Void>> createPost(
+            @AuthenticationPrincipal Long memberId,
             @RequestBody(required = true) CreatePostRequest request
     ) {
-        service.createPost(request);
+        service.createPost(memberId, request);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -123,10 +124,11 @@ public class PostController implements PostApiDocs {
     @Override
     @PatchMapping(path = "/{id}")
     public ResponseEntity<CommonResponse<Void>> updatePost(
+            @AuthenticationPrincipal Long memberId,
             @PathVariable Long id,
             @RequestBody(required = true) UpdatePostRequest request
     ) {
-        service.updatePost(id, request);
+        service.updatePost(memberId, id, request);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -145,9 +147,10 @@ public class PostController implements PostApiDocs {
     @Override
     @DeleteMapping(path = "/{id}")
     public ResponseEntity<CommonResponse<Void>> deletePost(
+            @AuthenticationPrincipal Long memberId,
             @PathVariable Long id
     ) {
-        service.deletePost(id);
+        service.deletePost(memberId, id);
 
         return ResponseEntity
                 .status(HttpStatus.OK)

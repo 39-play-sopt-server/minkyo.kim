@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.sopt.common.response.CommonResponse;
 import org.sopt.post.dto.request.CreatePostRequest;
@@ -16,6 +17,7 @@ import org.springframework.http.ResponseEntity;
  * 게시글 API의 요청 조건과 응답 상황을 문서화합니다.
  */
 @Tag(name = "게시글 API")
+@SecurityRequirement(name = "bearerAuth")
 public interface PostApiDocs {
     @Operation(summary = "게시글 작성")
     @ApiResponses({
@@ -23,19 +25,22 @@ public interface PostApiDocs {
             @ApiResponse(
                     responseCode = "400",
                     description = """
-                            - 제목･내용･작성자･카테고리 중 하나라도 비어 있는 경우
+                            - 제목･내용･카테고리 중 하나라도 비어 있는 경우
                             - 유효하지 않은 카테고리인 경우
                             """
             ),
+            @ApiResponse(responseCode = "401", description = "인증 토큰이 없거나 유효하지 않은 경우"),
             @ApiResponse(responseCode = "404", description = "작성자 회원이 존재하지 않는 경우")
     })
     ResponseEntity<CommonResponse<Void>> createPost(
+            @Parameter(hidden = true) Long memberId,
             CreatePostRequest request
     );
 
     @Operation(summary = "게시글 목록 조회")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "게시글 목록 조회 성공"),
+            @ApiResponse(responseCode = "401", description = "인증 토큰이 없거나 유효하지 않은 경우"),
             @ApiResponse(
                     responseCode = "400",
                     description = """
@@ -60,6 +65,7 @@ public interface PostApiDocs {
     @Operation(summary = "게시글 단건 조회")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "게시글 조회 성공"),
+            @ApiResponse(responseCode = "401", description = "인증 토큰이 없거나 유효하지 않은 경우"),
             @ApiResponse(responseCode = "404", description = "게시글이 존재하지 않는 경우")
     })
     ResponseEntity<CommonResponse<PostResponse>> readPost(
@@ -76,9 +82,12 @@ public interface PostApiDocs {
                             - 유효하지 않은 카테고리인 경우
                             """
             ),
+            @ApiResponse(responseCode = "401", description = "인증 토큰이 없거나 유효하지 않은 경우"),
+            @ApiResponse(responseCode = "403", description = "게시글 작성자가 아닌 경우"),
             @ApiResponse(responseCode = "404", description = "게시글이 존재하지 않는 경우")
     })
     ResponseEntity<CommonResponse<Void>> updatePost(
+            @Parameter(hidden = true) Long memberId,
             @Parameter(description = "수정할 게시글 ID") Long id,
             UpdatePostRequest request
     );
@@ -86,9 +95,12 @@ public interface PostApiDocs {
     @Operation(summary = "게시글 삭제")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "게시글 삭제 성공"),
+            @ApiResponse(responseCode = "401", description = "인증 토큰이 없거나 유효하지 않은 경우"),
+            @ApiResponse(responseCode = "403", description = "게시글 작성자가 아닌 경우"),
             @ApiResponse(responseCode = "404", description = "게시글이 존재하지 않는 경우")
     })
     ResponseEntity<CommonResponse<Void>> deletePost(
+            @Parameter(hidden = true) Long memberId,
             @Parameter(description = "삭제할 게시글 ID") Long id
     );
 }
