@@ -12,7 +12,8 @@ public enum PostErrorCode implements ErrorCode {
     TITLE_REQUIRED(HttpStatus.BAD_REQUEST, "제목은 필수 입력 항목입니다."),
     CONTENT_REQUIRED(HttpStatus.BAD_REQUEST, "내용은 필수 입력 항목입니다."),
     CATEGORY_REQUIRED(HttpStatus.BAD_REQUEST, "카테고리는 필수 입력 항목입니다."),
-    WRITER_REQUIRED(HttpStatus.BAD_REQUEST, "작성자는 필수 입력 항목입니다.");
+    WRITER_REQUIRED(HttpStatus.BAD_REQUEST, "작성자는 필수 입력 항목입니다."),
+    FORBIDDEN_ACCESS(HttpStatus.FORBIDDEN, "권한이 없습니다.");
 
     private final HttpStatus httpStatus;
     private final String message;

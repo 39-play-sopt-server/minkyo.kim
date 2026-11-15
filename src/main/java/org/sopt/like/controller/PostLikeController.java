@@ -4,13 +4,14 @@ import org.sopt.common.response.CommonResponse;
 import org.sopt.like.service.PostLikeService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 /**
  * 클라이언트의 게시글 좋아요 요청을 Service에 전달하고 처리 결과를 공통 응답으로 변환합니다.
  */
 @RestController
-@RequestMapping("/api/v1/posts/{postId}/likes/{memberId}")
+@RequestMapping("/api/v1/posts/{postId}/likes")
 public class PostLikeController implements PostLikeApiDocs {
     private final PostLikeService postLikeService;
 
@@ -28,8 +29,8 @@ public class PostLikeController implements PostLikeApiDocs {
     @Override
     @PutMapping
     public ResponseEntity<CommonResponse<Void>> createPostLike(
-            @PathVariable(required = true) Long postId,
-            @PathVariable(required = true) Long memberId
+            @AuthenticationPrincipal Long memberId,
+            @PathVariable(required = true) Long postId
     ) {
         postLikeService.createPostLike(postId, memberId);
 
@@ -51,8 +52,8 @@ public class PostLikeController implements PostLikeApiDocs {
     @Override
     @DeleteMapping
     public ResponseEntity<CommonResponse<Void>> deletePostLike(
-            @PathVariable(required = true) Long postId,
-            @PathVariable(required = true) Long memberId
+            @AuthenticationPrincipal Long memberId,
+            @PathVariable(required = true) Long postId
     ) {
         postLikeService.deletePostLike(postId, memberId);
 

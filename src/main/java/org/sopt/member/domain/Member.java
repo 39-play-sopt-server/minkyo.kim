@@ -15,6 +15,12 @@ public class Member extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false, unique = true)
+    private String email;
+
+    @Column(nullable = false)
+    private String password;
+
     @Column(unique = true, nullable = false)
     private String nickname;
 
@@ -28,8 +34,14 @@ public class Member extends BaseEntity {
      *
      * @param nickname 회원 닉네임
      */
-    public Member(String nickname) {
+    public Member(
+            String email,
+            String password,
+            String nickname
+    ) {
         validate(nickname);
+        this.email = email;
+        this.password = password;
         this.nickname = nickname;
         isDeleted = false;
     }
@@ -54,6 +66,10 @@ public class Member extends BaseEntity {
 
     public Long getId() {
         return id;
+    }
+
+    public String getPassword() {
+        return password;
     }
 
     public String getDisplayNickname() {

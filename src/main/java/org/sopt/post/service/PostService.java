@@ -55,12 +55,11 @@ public class PostService {
      *
      * @param request 게시글 생성 요청
      */
-    public void createPost(CreatePostRequest request) {
-        if (request.writerId() == null) {
-            throw new CustomException(PostErrorCode.WRITER_REQUIRED);
-        }
-
-        Member writer = memberRepository.findByIdAndIsDeletedFalse(request.writerId())
+    public void createPost(
+            Long memberId,
+            CreatePostRequest request
+    ) {
+        Member writer = memberRepository.findByIdAndIsDeletedFalse(memberId)
                 .orElseThrow(
                         () -> new CustomException(MemberErrorCode.MEMBER_NOT_FOUND)
                 );
@@ -137,8 +136,13 @@ public class PostService {
      * @param request 게시글 수정 요청
      */
     @Transactional
-    public void updatePost(Long id, UpdatePostRequest request) {
+    public void updatePost(
+            Long memberId,
+            Long id,
+            UpdatePostRequest request
+    ) {
         Post post = getPost(id);
+        validateWriter(memberId, post);
 
         Optional<Category> category = request
                 .category()
@@ -156,8 +160,13 @@ public class PostService {
      *
      * @param id 삭제할 게시글 ID
      */
-    public void deletePost(Long id) {
+    public void deletePost(
+            Long memberId,
+            Long id
+    ) {
         Post post = getPost(id);
+        validateWriter(memberId, post);
+
         postRepository.delete(post);
     }
 
@@ -166,6 +175,12 @@ public class PostService {
                 .orElseThrow(
                         () -> new CustomException(PostErrorCode.POST_NOT_FOUND)
                 );
+    }
+
+    private void validateWriter(Long memberId, Post post) {
+        if (!post.getWriter().getId().equals(memberId)) {
+            throw new CustomException(PostErrorCode.FORBIDDEN_ACCESS);
+        }
     }
 
     private PostSearchCondition createSearchCondition(
