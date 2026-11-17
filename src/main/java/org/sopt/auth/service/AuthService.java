@@ -1,6 +1,8 @@
 package org.sopt.auth.service;
 
 import org.sopt.common.jwt.JwtProvider;
+import io.jsonwebtoken.JwtException;
+import org.sopt.auth.dto.TokenPair;
 import org.sopt.auth.exception.AuthErrorCode;
 import org.sopt.common.exception.CustomException;
 import org.sopt.member.domain.Member;
@@ -32,7 +34,7 @@ public class AuthService {
     }
 
     @Transactional(readOnly = true)
-    public String login(String email, String password) {
+    public TokenPair login(String email, String password) {
         Member member = memberRepository.findByEmailAndIsDeletedFalse(email)
                 .orElseThrow(() -> new CustomException(AuthErrorCode.INVALID_CREDENTIALS));
 
@@ -40,6 +42,29 @@ public class AuthService {
             throw new CustomException(AuthErrorCode.INVALID_CREDENTIALS);
         }
 
-        return jwtProvider.createAccessToken(member.getId());
+        return issueTokenPair(member.getId());
+    }
+
+    @Transactional(readOnly = true)
+    public TokenPair reissue(String refreshToken) {
+        Long memberId;
+
+        try {
+            memberId = jwtProvider.getMemberIdFromRefreshToken(refreshToken);
+        } catch (JwtException | IllegalArgumentException e) {
+            throw new CustomException(AuthErrorCode.INVALID_REFRESH_TOKEN);
+        }
+
+        memberRepository.findByIdAndIsDeletedFalse(memberId)
+                .orElseThrow(() -> new CustomException(AuthErrorCode.INVALID_REFRESH_TOKEN));
+
+        return issueTokenPair(memberId);
+    }
+
+    private TokenPair issueTokenPair(Long memberId) {
+        return new TokenPair(
+                jwtProvider.createAccessToken(memberId),
+                jwtProvider.createRefreshToken(memberId)
+        );
     }
 }
