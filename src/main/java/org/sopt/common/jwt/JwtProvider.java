@@ -1,6 +1,8 @@
 package org.sopt.common.jwt;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtBuilder;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -29,53 +31,91 @@ public class JwtProvider {
     }
 
     public String createAccessToken(Long memberId) {
-        Date now = new Date();
-
-        return Jwts.builder()
-                .subject(String.valueOf(memberId))   // 누구의 토큰인지
-                .claim("token_type", "access")
-                .issuedAt(now)                       // 발급 시각
-                .expiration(new Date(now.getTime() + accessTokenExpiration)) // 만료 시각
-                .signWith(secretKey)                 // 서명
+        return createTokenBuilder(
+                memberId,
+                TokenType.ACCESS,
+                accessTokenExpiration
+        )
                 .compact();
     }
 
     public String createRefreshToken(Long memberId) {
-        Date now = new Date();
-
-        return Jwts.builder()
-                .subject(String.valueOf(memberId))
-                .claim("token_type", "refresh")
+        return createTokenBuilder(
+                memberId,
+                TokenType.REFRESH,
+                refreshTokenExpiration
+        )
                 .id(UUID.randomUUID().toString())
-                .issuedAt(now)
-                .expiration(new Date(now.getTime() + refreshTokenExpiration))
-                .signWith(secretKey)
                 .compact();
     }
 
     public Long getMemberIdFromAccessToken(String token) {
-        return getMemberId(token, "access");
+        return getMemberId(token, TokenType.ACCESS);
     }
 
     public Long getMemberIdFromRefreshToken(String token) {
-        return getMemberId(token, "refresh");
+        return getMemberId(token, TokenType.REFRESH);
     }
 
     private Long getMemberId(
             String token,
-            String expectedTokenType
+            TokenType expectedTokenType
     ) {
-        Claims claims = Jwts.parser()
-                .verifyWith(secretKey)
-                .build()
-                .parseSignedClaims(token)  // 서명, 만료 검증 → 실패 시 JwtException
-                .getPayload();
-
-        String tokenType = claims.get("token_type", String.class);
-        if (!expectedTokenType.equals(tokenType)) {
-            throw new io.jsonwebtoken.JwtException("유효하지 않은 토큰 종류입니다.");
-        }
+        Claims claims = parseClaims(token);
+        validateTokenType(claims, expectedTokenType);
 
         return Long.valueOf(claims.getSubject());
+    }
+
+    private JwtBuilder createTokenBuilder(
+            Long memberId,
+            TokenType tokenType,
+            long expiration
+    ) {
+        Date now = new Date();
+
+        return Jwts.builder()
+                .subject(String.valueOf(memberId))
+                .claim(JwtConstants.TOKEN_TYPE_CLAIM, tokenType.getClaimValue())
+                .issuedAt(now)
+                .expiration(new Date(now.getTime() + expiration))
+                .signWith(secretKey);
+    }
+
+    private Claims parseClaims(String token) {
+        return Jwts.parser()
+                .verifyWith(secretKey)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
+    }
+
+    private void validateTokenType(
+            Claims claims,
+            TokenType expectedTokenType
+    ) {
+        String tokenType = claims.get(
+                JwtConstants.TOKEN_TYPE_CLAIM,
+                String.class
+        );
+
+        if (!expectedTokenType.getClaimValue().equals(tokenType)) {
+            throw new JwtException("유효하지 않은 토큰 종류입니다.");
+        }
+    }
+
+    private enum TokenType {
+        ACCESS("access"),
+        REFRESH("refresh");
+
+        private final String claimValue;
+
+        TokenType(String claimValue) {
+            this.claimValue = claimValue;
+        }
+
+        private String getClaimValue() {
+            return claimValue;
+        }
     }
 }

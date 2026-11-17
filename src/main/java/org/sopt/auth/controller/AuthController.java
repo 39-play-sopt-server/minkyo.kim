@@ -4,6 +4,7 @@ import org.sopt.auth.dto.LoginRequest;
 import org.sopt.auth.dto.SignupRequest;
 import org.sopt.auth.dto.TokenPair;
 import org.sopt.auth.service.AuthService;
+import org.sopt.common.jwt.JwtConstants;
 import org.sopt.common.response.CommonResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -68,7 +69,7 @@ public class AuthController implements AuthApiDocs {
     @Override
     @PostMapping("/reissue")
     public ResponseEntity<CommonResponse<Void>> reissue(
-            @CookieValue(name = "refresh_token", required = false) String refreshToken
+            @CookieValue(name = JwtConstants.REFRESH_TOKEN_COOKIE_NAME, required = false) String refreshToken
     ) {
         TokenPair tokenPair = authService.reissue(refreshToken);
 
@@ -80,17 +81,20 @@ public class AuthController implements AuthApiDocs {
             String message
     ) {
         ResponseCookie refreshTokenCookie = ResponseCookie
-                .from("refresh_token", tokenPair.refreshToken())
+                .from(JwtConstants.REFRESH_TOKEN_COOKIE_NAME, tokenPair.refreshToken())
                 .httpOnly(true)
                 .secure(true)
                 .sameSite("Strict")
-                .path("/api/v1/auth/reissue")
+                .path(JwtConstants.REFRESH_TOKEN_COOKIE_PATH)
                 .maxAge(Duration.ofMillis(refreshTokenExpiration))
                 .build();
 
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenPair.accessToken())
+                .header(
+                        HttpHeaders.AUTHORIZATION,
+                        JwtConstants.BEARER_PREFIX + tokenPair.accessToken()
+                )
                 .header(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString())
                 .body(CommonResponse.success(message, null));
     }
