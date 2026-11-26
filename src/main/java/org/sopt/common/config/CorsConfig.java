@@ -1,6 +1,7 @@
 package org.sopt.common.config;
 
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpHeaders;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -19,6 +20,8 @@ public class CorsConfig implements WebMvcConfigurer {
                         "DELETE",
                         "OPTIONS"
                 )
-                .allowedHeaders("*");
+                .allowedHeaders("*")
+                .exposedHeaders(HttpHeaders.AUTHORIZATION)
+                .allowCredentials(true);
     }
 }

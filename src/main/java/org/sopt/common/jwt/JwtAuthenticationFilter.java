@@ -15,8 +15,6 @@ import java.util.List;
 
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    private static final String BEARER_PREFIX = "Bearer ";
-
     private final JwtProvider jwtProvider;
 
     public JwtAuthenticationFilter(JwtProvider jwtProvider) {
@@ -31,7 +29,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         if (token != null) {
             try {
-                Long memberId = jwtProvider.getMemberId(token);
+                Long memberId = jwtProvider.getMemberIdFromAccessToken(token);
 
                 // 인증 완료된 Authentication 생성 후 SecurityContext에 저장
                 UsernamePasswordAuthenticationToken authentication =
@@ -47,8 +45,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private String resolveToken(HttpServletRequest request) {
         String header = request.getHeader(HttpHeaders.AUTHORIZATION);
-        if (header != null && header.startsWith(BEARER_PREFIX)) {
-            return header.substring(BEARER_PREFIX.length());
+        if (header != null && header.startsWith(JwtConstants.BEARER_PREFIX)) {
+            return header.substring(JwtConstants.BEARER_PREFIX.length());
         }
         return null;
     }
