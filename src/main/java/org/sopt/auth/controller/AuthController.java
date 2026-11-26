@@ -76,6 +76,30 @@ public class AuthController implements AuthApiDocs {
         return createTokenResponse(tokenPair, "Access Token이 재발급되었습니다.");
     }
 
+    @Override
+    @PostMapping("/logout")
+    public ResponseEntity<CommonResponse<Void>> logout() {
+        ResponseCookie expiredRefreshTokenCookie = ResponseCookie
+                .from(JwtConstants.REFRESH_TOKEN_COOKIE_NAME, "")
+                .httpOnly(true)
+                .secure(true)
+                .sameSite("Strict")
+                .path("/api/v1")
+                .maxAge(Duration.ZERO)
+                .build();
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .header(
+                        HttpHeaders.SET_COOKIE,
+                        expiredRefreshTokenCookie.toString()
+                )
+                .body(CommonResponse.success(
+                        "로그아웃에 성공했습니다.",
+                        null
+                ));
+    }
+
     private ResponseEntity<CommonResponse<Void>> createTokenResponse(
             TokenPair tokenPair,
             String message
@@ -85,7 +109,7 @@ public class AuthController implements AuthApiDocs {
                 .httpOnly(true)
                 .secure(true)
                 .sameSite("Strict")
-                .path(JwtConstants.REFRESH_TOKEN_COOKIE_PATH)
+                .path("/api/v1")
                 .maxAge(Duration.ofMillis(refreshTokenExpiration))
                 .build();
 

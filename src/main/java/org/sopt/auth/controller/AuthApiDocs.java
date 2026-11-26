@@ -66,4 +66,17 @@ public interface AuthApiDocs {
             )
             String refreshToken
     );
+
+    @Operation(summary = "로그아웃")
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "로그아웃 성공",
+                    headers = @Header(
+                            name = HttpHeaders.SET_COOKIE,
+                            description = "만료된 Refresh Token 쿠키"
+                    )
+            )
+    })
+    ResponseEntity<CommonResponse<Void>> logout();
 }
